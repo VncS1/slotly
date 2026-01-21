@@ -1,0 +1,189 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Slotly - Requests
+meta:
+  id: wrk_72df005f7e3b49ec98111688f62df5d5
+  created: 1769025380894
+  modified: 1769027404112
+  description: Requests for Insomnia tests.
+collection:
+  - name: Auth
+    meta:
+      id: fld_3755223ae74a4f5fa2353db6126f663b
+      created: 1769027295732
+      modified: 1769027295732
+      sortKey: -1769027295732
+      description: ""
+    children:
+      - url: http://127.0.0.1:8000/api/login
+        name: Login
+        meta:
+          id: req_557ac6adc4764d9282f4c3040037ea9a
+          created: 1769025380931
+          modified: 1769027299524
+          isPrivate: false
+          description: ""
+          sortKey: -1769027299499
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "email": "barbeiro@teste.com",
+              "password": "password"
+            }
+        headers:
+          - name: Accept
+            value: application/json
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: application/json
+            description: ""
+            disabled: false
+        authentication:
+          type: none
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://127.0.0.1:8000/api/user
+        name: Test Login Tokens
+        meta:
+          id: req_94e3daba17a34713ad5d4f61e0745c03
+          created: 1769026946253
+          modified: 1769028052515
+          isPrivate: false
+          description: ""
+          sortKey: -1769027299599
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: 1|IyGR445fuyY2jOixP3ZqEG3o2LFKueo0bEYQONOg2f93b62f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Services
+    meta:
+      id: fld_258f65b80b6d4ae9965f9efc100051ed
+      created: 1769027311845
+      modified: 1769027311845
+      sortKey: -1769027311845
+      description: ""
+    children:
+      - url: http://127.0.0.1:8000/api/services
+        name: List Services
+        meta:
+          id: req_01f75d44bc8845fd9b1c8df26ccacdb9
+          created: 1769027034928
+          modified: 1769027319245
+          isPrivate: false
+          description: ""
+          sortKey: -1769027314898
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: 1|IyGR445fuyY2jOixP3ZqEG3o2LFKueo0bEYQONOg2f93b62f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://127.0.0.1:8000/api/services
+        name: Create Service
+        meta:
+          id: req_6838b976a4c940a59b56199e7155d733
+          created: 1769027147065
+          modified: 1769027321039
+          isPrivate: false
+          description: ""
+          sortKey: -1769027314998
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "Pezinho e Sobrancelha",
+              "description": "Acabamento fino na navalha",
+              "duration_minutes": 15,
+              "price": 25.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: 1|IyGR445fuyY2jOixP3ZqEG3o2LFKueo0bEYQONOg2f93b62f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://127.0.0.1:8000/api/services/3
+        name: Delete Services
+        meta:
+          id: req_9a3daa158f164f0ca03b132fc758704d
+          created: 1769027243926
+          modified: 1769027314712
+          isPrivate: false
+          description: ""
+          sortKey: -1769027314698
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        authentication:
+          type: bearer
+          token: 1|IyGR445fuyY2jOixP3ZqEG3o2LFKueo0bEYQONOg2f93b62f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_a0b05afcec4e62dd85b040d68d96ae08229794b1
+    created: 1769025380921
+    modified: 1769025380921
+environments:
+  name: Base Environment
+  meta:
+    id: env_a0b05afcec4e62dd85b040d68d96ae08229794b1
+    created: 1769025380919
+    modified: 1769025380919
+    isPrivate: false
