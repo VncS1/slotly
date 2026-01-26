@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceController;
 
 // --- Rotas Públicas (Qualquer um acessa) ---
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 // --- Rotas Protegidas (Precisa estar logado) ---
 // O middleware 'auth:sanctum' verifica se o Token é válido

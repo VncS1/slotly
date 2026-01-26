@@ -29,9 +29,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // Relacionamentos
-
-    // Um prestador tem muitos serviços
+    
+    
     public function services()
     {
         return $this->hasMany(Service::class);
