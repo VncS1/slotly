@@ -22,6 +22,7 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
             'duration_minutes' => 'required|integer|min:5',
             'price' => 'required|numeric|min:0',
+            'modality' => 'required|in:online,in_person',
         ]);
 
         // 2. Criação (O Laravel preenche o user_id automaticamente com o relacionamento)

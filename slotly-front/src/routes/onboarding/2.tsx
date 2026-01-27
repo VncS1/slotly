@@ -51,12 +51,10 @@ function OnboardingStep2() {
         formData.append("profile_photo_path", data.photo[0]);
       }
 
-      // Envia para o backend (ajuste a rota se necessário)
       await api.post("/user/profile-update", formData);
 
-      // Avança para o passo 3 (Services ou Schedule)
-      // await navigate({ to: "/onboarding/3" });
-      alert("Sucesso! Pronto para o passo 3."); // Placeholder
+      await navigate({ to: "/onboarding/3" });
+
     } catch (error) {
       if (error instanceof AxiosError) {
         setServerError(
@@ -81,7 +79,6 @@ function OnboardingStep2() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-20 px-4">
-      {/* Header com Logo e Sign Out */}
       <div className="w-full max-w-4xl flex justify-between items-center mb-12">
         <div className="flex items-center gap-2 font-bold text-xl text-gray-900">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
@@ -97,11 +94,9 @@ function OnboardingStep2() {
         </button>
       </div>
 
-      {/* Barra de Progresso */}
       <div className="w-full max-w-4xl mb-8">
         <p className="text-sm font-medium text-gray-900 mb-2">Step 2 of 3</p>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          {/* Largura ajustada para 2/3 (66%) */}
           <div className="bg-blue-600 h-2 rounded-full w-2/3 transition-all duration-500"></div>
         </div>
         <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
@@ -131,7 +126,6 @@ function OnboardingStep2() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* Seção de Foto */}
           <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 pb-6 border-b border-gray-100">
             <div className="relative group">
               <div className="w-32 h-32 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
@@ -174,7 +168,6 @@ function OnboardingStep2() {
             </div>
           </div>
 
-          {/* Seção da Bio */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Sobre você / Seu negócio
