@@ -16,6 +16,8 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'business_name',
+        'business_slug',
         'role', // 'provider' ou 'client'
     ];
 
@@ -52,5 +54,9 @@ class User extends Authenticatable
     public function appointmentsAsClient()
     {
         return $this->hasMany(Appointment::class, 'client_id');
+    }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class);
     }
 }

@@ -10,11 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as RegisterProviderRouteImport } from './routes/register/provider'
+import { Route as RegisterClientRouteImport } from './routes/register/client'
+import { Route as Onboarding3RouteImport } from './routes/onboarding/3'
+import { Route as Onboarding2RouteImport } from './routes/onboarding/2'
+import { Route as Onboarding1RouteImport } from './routes/onboarding/1'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterIndexRoute = RegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
@@ -22,31 +33,105 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterProviderRoute = RegisterProviderRouteImport.update({
+  id: '/register/provider',
+  path: '/register/provider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterClientRoute = RegisterClientRouteImport.update({
+  id: '/register/client',
+  path: '/register/client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Onboarding3Route = Onboarding3RouteImport.update({
+  id: '/onboarding/3',
+  path: '/onboarding/3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Onboarding2Route = Onboarding2RouteImport.update({
+  id: '/onboarding/2',
+  path: '/onboarding/2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Onboarding1Route = Onboarding1RouteImport.update({
+  id: '/onboarding/1',
+  path: '/onboarding/1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/onboarding/1': typeof Onboarding1Route
+  '/onboarding/2': typeof Onboarding2Route
+  '/onboarding/3': typeof Onboarding3Route
+  '/register/client': typeof RegisterClientRoute
+  '/register/provider': typeof RegisterProviderRoute
   '/login/': typeof LoginIndexRoute
+  '/register/': typeof RegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/onboarding/1': typeof Onboarding1Route
+  '/onboarding/2': typeof Onboarding2Route
+  '/onboarding/3': typeof Onboarding3Route
+  '/register/client': typeof RegisterClientRoute
+  '/register/provider': typeof RegisterProviderRoute
   '/login': typeof LoginIndexRoute
+  '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/onboarding/1': typeof Onboarding1Route
+  '/onboarding/2': typeof Onboarding2Route
+  '/onboarding/3': typeof Onboarding3Route
+  '/register/client': typeof RegisterClientRoute
+  '/register/provider': typeof RegisterProviderRoute
   '/login/': typeof LoginIndexRoute
+  '/register/': typeof RegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login/'
+  fullPaths:
+    | '/'
+    | '/onboarding/1'
+    | '/onboarding/2'
+    | '/onboarding/3'
+    | '/register/client'
+    | '/register/provider'
+    | '/login/'
+    | '/register/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login/'
+  to:
+    | '/'
+    | '/onboarding/1'
+    | '/onboarding/2'
+    | '/onboarding/3'
+    | '/register/client'
+    | '/register/provider'
+    | '/login'
+    | '/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/onboarding/1'
+    | '/onboarding/2'
+    | '/onboarding/3'
+    | '/register/client'
+    | '/register/provider'
+    | '/login/'
+    | '/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  Onboarding1Route: typeof Onboarding1Route
+  Onboarding2Route: typeof Onboarding2Route
+  Onboarding3Route: typeof Onboarding3Route
+  RegisterClientRoute: typeof RegisterClientRoute
+  RegisterProviderRoute: typeof RegisterProviderRoute
   LoginIndexRoute: typeof LoginIndexRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof RegisterIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login/': {
       id: '/login/'
       path: '/login'
@@ -65,12 +157,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register/provider': {
+      id: '/register/provider'
+      path: '/register/provider'
+      fullPath: '/register/provider'
+      preLoaderRoute: typeof RegisterProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/client': {
+      id: '/register/client'
+      path: '/register/client'
+      fullPath: '/register/client'
+      preLoaderRoute: typeof RegisterClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/3': {
+      id: '/onboarding/3'
+      path: '/onboarding/3'
+      fullPath: '/onboarding/3'
+      preLoaderRoute: typeof Onboarding3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/2': {
+      id: '/onboarding/2'
+      path: '/onboarding/2'
+      fullPath: '/onboarding/2'
+      preLoaderRoute: typeof Onboarding2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/1': {
+      id: '/onboarding/1'
+      path: '/onboarding/1'
+      fullPath: '/onboarding/1'
+      preLoaderRoute: typeof Onboarding1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  Onboarding1Route: Onboarding1Route,
+  Onboarding2Route: Onboarding2Route,
+  Onboarding3Route: Onboarding3Route,
+  RegisterClientRoute: RegisterClientRoute,
+  RegisterProviderRoute: RegisterProviderRoute,
   LoginIndexRoute: LoginIndexRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
