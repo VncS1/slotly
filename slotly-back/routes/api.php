@@ -18,6 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('services', ServiceController::class);
 
+    Route::apiResource('services/{id}', ServiceController::class);
+
     Route::put('/user/setup-slug', [AuthController::class, 'updateSlug']);
 
     Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);

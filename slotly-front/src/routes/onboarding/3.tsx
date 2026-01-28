@@ -1,9 +1,10 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
-import { Plus, Trash2, Clock, DollarSign } from "lucide-react";
+import { Plus, Clock, DollarSign } from "lucide-react";
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { serviceSchema, type ServiceFormValues } from "./-schema3";
 
 export const Route = createFileRoute("/onboarding/3")({
@@ -15,185 +16,193 @@ export const Route = createFileRoute("/onboarding/3")({
   component: OnboardingStep3,
 });
 
-type ServiceItem = ServiceFormValues & { id: number };
-
 function OnboardingStep3() {
-  const [services, setServices] = useState<ServiceItem[]>([]);
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(serviceSchema),
-    defaultValues: { modality: "online" }, // Valor padrão do enum
+    defaultValues: {
+      modality: "online",
+      duration_minutes: 30,
+      price: 0,
+    },
   });
 
-  // 2. GET: Buscar serviços existentes ao carregar a tela
-  useEffect(() => {
-    api.get("/services").then((res) => setServices(res.data));
-  }, []);
-
-  // 3. POST: Enviar novo serviço para o Backend
   const onSubmit = async (data: ServiceFormValues) => {
     try {
-      const response = await api.post("/services", data);
-      setServices([...services, response.data]); // Atualiza a lista visualmente
-      reset(); // Limpa o formulário
-    } catch (error) {
-      console.error("Erro ao criar serviço", error);
-      alert("Erro ao criar serviço. Verifique o console.");
-    }
-  };
+      setServerError(null);
 
-  const handleDelete = async (id: number) => {
-    await api.delete(`/services/${id}`);
-    setServices(services.filter((s) => s.id !== id));
+      await api.post("/services", data);
+
+      await navigate({ to: "/event-types" });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setServerError(
+          error.response?.data?.message || "Erro ao criar serviço.",
+        );
+      }
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-20 px-4">
-      <div className="w-full max-w-4xl mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          O que você oferece?
-        </h1>
-        <p className="text-gray-500">
-          Cadastre seus serviços e defina se são online ou presenciais.
-        </p>
+      <div className="w-full max-w-xl mb-8">
+        <p className="text-sm font-medium text-gray-900 mb-2">Step 3 of 3</p>
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+          <div className="bg-blue-600 h-2 rounded-full w-full transition-all duration-500"></div>
+        </div>
+        <div className="flex justify-between text-xs text-gray-400 font-medium">
+          <span className="text-blue-600">URL</span>
+          <span className="text-blue-600">Profile</span>
+          <span className="text-blue-600">First Service</span>
+        </div>
       </div>
 
-      <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* ESQUERDA: Formulário de Cadastro */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-fit">
-          <h2 className="font-semibold mb-4 text-lg">Novo Serviço</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-xl">
+        <div className="mb-6">
+          <h1 className="text-2xl font-extrabold text-gray-900">
+            Defina seu primeiro serviço
+          </h1>
+          <p className="text-gray-500 mt-1">
+            O que as pessoas vão agendar com você? Você poderá criar outros
+            tipos (Event Types) depois no painel.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nome do Evento
+            </label>
+            <input
+              {...register("name")}
+              placeholder="Ex: Consultoria de 30min"
+              className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.name.message as string}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Nome do Serviço
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Preço
               </label>
-              <input
-                {...register("name")}
-                placeholder="Ex: Consultoria Rápida"
-                className="w-full p-2 border rounded-lg mt-1"
-              />
-              {errors.name && (
-                <span className="text-red-500 text-xs">
-                  {errors.name.message}
-                </span>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register("price")}
+                  className="w-full pl-9 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none"
+                />
+              </div>
+              {errors.price && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.price.message as string}
+                </p>
               )}
             </div>
 
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Preço (R$)
-                </label>
-                <div className="relative mt-1">
-                  <DollarSign className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register("price")}
-                    className="w-full pl-8 p-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Duração (min)
-                </label>
-                <div className="relative mt-1">
-                  <Clock className="absolute left-2 top-2.5 w-4 h-4 text-gray-400" />
-                  <input
-                    type="number"
-                    {...register("duration_minutes")}
-                    className="w-full pl-8 p-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* O Campo MODALITY */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Modalidade
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Duração (min)
               </label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className="border rounded-lg p-3 flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
-                  <input
-                    type="radio"
-                    value="online"
-                    {...register("modality")}
-                    className="accent-blue-600"
-                  />
-                  <span>Online 🌐</span>
-                </label>
-                <label className="border rounded-lg p-3 flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
-                  <input
-                    type="radio"
-                    value="in_person"
-                    {...register("modality")}
-                    className="accent-blue-600"
-                  />
-                  <span>Presencial 📍</span>
-                </label>
+              <div className="relative">
+                <Clock className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                <input
+                  type="number"
+                  {...register("duration_minutes")}
+                  className="w-full pl-9 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none"
+                />
               </div>
+              {errors.duration_minutes && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.duration_minutes.message as string}
+                </p>
+              )}
             </div>
+          </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
-            >
-              <Plus className="w-4 h-4" /> Adicionar Serviço
-            </button>
-          </form>
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Onde vai acontecer?
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="cursor-pointer">
+                <input
+                  type="radio"
+                  value="online"
+                  {...register("modality")}
+                  className="peer hidden"
+                />
+                <div className="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all hover:bg-gray-50">
+                  <div className="text-2xl mb-1">💻</div>
+                  <span className="font-medium text-sm text-gray-700 peer-checked:text-blue-700">
+                    Online
+                  </span>
+                </div>
+              </label>
 
-        {/* DIREITA: Lista de Exibição */}
-        <div className="space-y-4">
-          <h2 className="font-semibold text-lg text-gray-900">
-            Seus Serviços Ativos
-          </h2>
-          {services.length === 0 && (
-            <p className="text-gray-400 text-center py-10 italic">
-              Nenhum serviço cadastrado ainda.
-            </p>
+              <label className="cursor-pointer">
+                <input
+                  type="radio"
+                  value="in_person"
+                  {...register("modality")}
+                  className="peer hidden"
+                />
+                <div className="border border-gray-200 rounded-xl p-4 text-center peer-checked:border-blue-600 peer-checked:bg-blue-50 transition-all hover:bg-gray-50">
+                  <div className="text-2xl mb-1">📍</div>
+                  <span className="font-medium text-sm text-gray-700 peer-checked:text-blue-700">
+                    Presencial
+                  </span>
+                </div>
+              </label>
+            </div>
+            {errors.modality && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.modality.message as string}
+              </p>
+            )}
+          </div>
+
+          {serverError && (
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+              {serverError}
+            </div>
           )}
 
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center group"
+          <div className="flex items-center gap-4 pt-4">
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
             >
-              <div>
-                <h3 className="font-bold text-gray-900">{service.name}</h3>
-                <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {service.duration_minutes} min
-                  </span>
-                  <span className="flex items-center gap-1 font-medium text-green-600">
-                    R$ {service.price}
-                  </span>
-                  <span
-                    className={`px-2 py-0.5 rounded text-xs font-medium ${
-                      service.modality === "online"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-purple-100 text-purple-700"
-                    }`}
-                  >
-                    {service.modality === "online" ? "Online" : "Presencial"}
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => handleDelete(service.id)}
-                className="text-gray-400 hover:text-red-500 p-2"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            </div>
-          ))}
-        </div>
+              Voltar
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 shadow-lg shadow-blue-600/20"
+            >
+              {isSubmitting ? (
+                "Finalizando..."
+              ) : (
+                <>
+                  <Plus className="w-5 h-5" /> Criar e Ir para Dashboard
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

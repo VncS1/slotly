@@ -10,9 +10,9 @@ import { AxiosError } from "axios";
 import { api } from "../../lib/api";
 import { LoginSchema, type LoginFormValues } from "./-schema";
 
-export const Route = createFileRoute('/login/')({
+export const Route = createFileRoute("/login/")({
   component: Login,
-})
+});
 
 export function Login() {
   const [userType, setUserType] = useState<"client" | "provider">("client");
@@ -20,8 +20,6 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  const themeColor = userType === "client" ? "teal" : "blue";
 
   const {
     register,
@@ -36,19 +34,27 @@ export function Login() {
       setServerError(null);
 
       const response = await api.post("/login", data);
-      const { token, user } = response.data;
+      
+      const { access_token, user } = response.data;
 
       if (user.role !== userType) {
-        console.warn(`Usuário logou na aba errada. Role real: ${user.role}`);
+        setServerError(
+          `Identificamos que você é um ${user.role === "provider" ? "Profissional" : "Cliente"}. Mudamos você para a aba correta!`,
+        );
+        setUserType(user.role as "client" | "provider");
+
+        return;
       }
 
-      localStorage.setItem("slotly_token", token);
+      localStorage.setItem("slotly_token", access_token);
       localStorage.setItem("slotly_user", JSON.stringify(user));
 
-      if (user.role === "provider") {
-        await navigate({ to: "/admin/dashboard" }); // Futura rota
+      if (user.role === "provider" && user.onboarding_complete) {
+        await navigate({ to: "/event-types" });
+      } else if (user.role === "provider" && !user.onboarding_complete) {
+        await navigate({ to: "/onboarding/1" });
       } else {
-        await navigate({ to: "/" }); // Rota de cliente
+        await navigate({ to: "/" });
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -185,11 +191,7 @@ export function Login() {
           <p className="text-gray-500">
             Ainda não tem conta?{" "}
             <a
-              href={
-                userType === "client"
-                  ? "/register"
-                  : "/register"
-              }
+              href={userType === "client" ? "/register" : "/register"}
               className={`${userType === "client" ? "text-teal-600" : "text-blue-600"} font-bold`}
             >
               Crie agora!

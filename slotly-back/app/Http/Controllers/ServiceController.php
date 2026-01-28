@@ -7,16 +7,13 @@ use App\Models\Service;
 
 class ServiceController extends Controller
 {
-    // Listar todos os serviços DO USUÁRIO LOGADO
     public function index(Request $request)
     {
-        return $request->user()->services;
+        return $request->user()->services()->select('id', 'name', 'duration_minutes', 'modality', 'price', 'is_active')->get();
     }
 
-    // Criar um novo serviço
     public function store(Request $request)
     {
-        // 1. Validação
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -25,20 +22,39 @@ class ServiceController extends Controller
             'modality' => 'required|in:online,in_person',
         ]);
 
-        // 2. Criação (O Laravel preenche o user_id automaticamente com o relacionamento)
         $service = $request->user()->services()->create($validated);
+
+        $user = $request->user();
+
+        if (!$user->onboarding_complete) {
+            $user->onboarding_complete = true;
+            $user->save();
+        }
 
         return response()->json($service, 201);
     }
-    
-    // Deletar um serviço
+
+    public function update(Request $request, Service $service)
+    {
+        if ($service->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Não autorizado'], 403);
+        }
+
+        $validated = $request->validate([
+            'is_active' => 'required|boolean',
+        ]);
+
+        $service->update($validated);
+
+        return response()->json($service);
+    }
+
     public function destroy(Request $request, string $id)
     {
-        // Busca o serviço garantindo que pertence ao usuário logado (Segurança)
         $service = $request->user()->services()->findOrFail($id);
-        
+
         $service->delete();
-        
+
         return response()->json(['message' => 'Serviço removido']);
     }
 }

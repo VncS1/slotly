@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
@@ -17,7 +18,12 @@ import { Route as RegisterClientRouteImport } from './routes/register/client'
 import { Route as Onboarding3RouteImport } from './routes/onboarding/3'
 import { Route as Onboarding2RouteImport } from './routes/onboarding/2'
 import { Route as Onboarding1RouteImport } from './routes/onboarding/1'
+import { Route as DashboardEventTypesRouteImport } from './routes/_dashboard/event-types'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -58,9 +64,15 @@ const Onboarding1Route = Onboarding1RouteImport.update({
   path: '/onboarding/1',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardEventTypesRoute = DashboardEventTypesRouteImport.update({
+  id: '/event-types',
+  path: '/event-types',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -71,6 +83,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -82,6 +95,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_dashboard': typeof DashboardRouteWithChildren
+  '/_dashboard/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -94,6 +109,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -104,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -114,6 +131,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_dashboard'
+    | '/_dashboard/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -125,6 +144,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
   Onboarding1Route: typeof Onboarding1Route
   Onboarding2Route: typeof Onboarding2Route
   Onboarding3Route: typeof Onboarding3Route
@@ -136,6 +156,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -192,11 +219,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Onboarding1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboard/event-types': {
+      id: '/_dashboard/event-types'
+      path: '/event-types'
+      fullPath: '/event-types'
+      preLoaderRoute: typeof DashboardEventTypesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardEventTypesRoute: typeof DashboardEventTypesRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardEventTypesRoute: DashboardEventTypesRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
   Onboarding1Route: Onboarding1Route,
   Onboarding2Route: Onboarding2Route,
   Onboarding3Route: Onboarding3Route,
