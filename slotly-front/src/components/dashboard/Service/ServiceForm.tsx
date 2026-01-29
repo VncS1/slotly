@@ -3,30 +3,46 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { serviceSchema, type ServiceFormValues } from "./-service_schema";
 import { api } from "../../../lib/api";
 import { Building, Clock, DollarSign, Group } from "lucide-react";
+import type { Service } from "../../../types/ServiceCardTypes";
 
 interface ServiceFormProps {
   onSuccess: () => void;
+  serviceToEdit?: Service | null;
 }
 
-export function ServiceForm({ onSuccess }: ServiceFormProps) {
+export function ServiceForm({ onSuccess, serviceToEdit }: ServiceFormProps) {
+  const isEditing = !!serviceToEdit;
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(serviceSchema),
-    defaultValues: {
-      modality: "online",
-      is_active: true,
-    },
+    defaultValues: serviceToEdit
+      ? {
+          name: serviceToEdit.name,
+          duration_minutes: serviceToEdit.duration_minutes,
+          price: serviceToEdit.price,
+          modality: serviceToEdit.modality,
+        }
+      : {
+          modality: "online",
+          is_active: true,
+        },
   });
 
   const onSubmit = async (data: ServiceFormValues) => {
     try {
-      await api.post("/services", data);
+      if (isEditing) {
+        console.log("Dados que serão enviados:", data)
+        await api.put(`/services/${serviceToEdit.id}`, data);
+      } else {
+        await api.post("/services", data);
+      }
       onSuccess();
     } catch (error) {
-      console.error("Erro ao salvar serviço no Laravel:", error);
+      console.error("Erro ao salvar:", error);
     }
   };
 
@@ -115,14 +131,17 @@ export function ServiceForm({ onSuccess }: ServiceFormProps) {
           )}
         </div>
       </div>
-
       <div className="pt-4 border-t border-gray-100 flex justify-end gap-3">
         <button
           type="submit"
           disabled={isSubmitting}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all disabled:opacity-50"
         >
-          {isSubmitting ? "Salvando..." : "Criar Serviço"}
+          {isSubmitting
+            ? "Salvando..."
+            : isEditing
+              ? "Salvar Edição"
+              : "Criar Serviço"}
         </button>
       </div>
     </form>

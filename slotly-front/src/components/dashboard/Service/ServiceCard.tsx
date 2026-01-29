@@ -1,13 +1,14 @@
-import { Edit2, Share2, Copy, Globe, Users } from "lucide-react";
+import { Edit2, Share2, Copy, Globe, Users, Edit } from "lucide-react";
 import type { Service } from "../../../types/ServiceCardTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../../lib/api";
 
 interface ServiceCardProps {
   service: Service;
+  onEdit: () => void;
 }
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export function ServiceCard({ service, onEdit }: ServiceCardProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -20,6 +21,25 @@ export function ServiceCard({ service }: ServiceCardProps) {
       queryClient.invalidateQueries({ queryKey: ["services"] });
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      return await api.delete(`/services/${service.id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+    },
+  });
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        `Tem certeza que deseja excluir o serviço "${service.name}"?`,
+      )
+    ) {
+      deleteMutation.mutate();
+    }
+  };
 
   const handleToggle = () => {
     mutation.mutate(!service.is_active);
@@ -64,8 +84,11 @@ export function ServiceCard({ service }: ServiceCardProps) {
         </div>
 
         <div className="grid grid-cols-3 gap-2 border-t border-gray-50 pt-4">
-          <button className="flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100">
-            <Edit2 size={16} /> Edit
+          <button
+            onClick={onEdit}
+            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          >
+            <Edit size={18} />
           </button>
           <button className="flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors border border-gray-100">
             <Share2 size={16} /> Share

@@ -7,6 +7,7 @@ import { ServiceCard } from "../../components/dashboard/Service/ServiceCard";
 import { ServiceForm } from "../../components/dashboard/Service/ServiceForm";
 import { EventTypesHeader } from "../../components/dashboard/Service/EventTypesHeader";
 import { useState } from "react";
+import type { Service } from "../../types/ServiceCardTypes";
 
 export const Route = createFileRoute("/_dashboard/event-types")({
   component: EventTypes,
@@ -14,7 +15,23 @@ export const Route = createFileRoute("/_dashboard/event-types")({
 
 export function EventTypes() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [serviceToEdit, setServiceToEdit] = useState<Service | null>(null);
   const queryClient = useQueryClient();
+
+  const handleEdit = (service: Service) => {
+    setServiceToEdit(service);
+    setIsModalOpen(true);
+  };
+
+  const handleCreate = () => {
+    setServiceToEdit(null);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setServiceToEdit(null);
+  };
 
   const {
     data: services,
@@ -54,7 +71,7 @@ export function EventTypes() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <EventTypesHeader onOpenModal={() => setIsModalOpen(true)} />
+      <EventTypesHeader onOpenModal={handleCreate} />
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -67,7 +84,11 @@ export function EventTypes() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service: any) => (
-            <ServiceCard key={service.id} service={service} />
+            <ServiceCard
+              key={service.id}
+              service={service}
+              onEdit={() => handleEdit(service)}
+            />
           ))}
         </div>
       )}
@@ -76,9 +97,12 @@ export function EventTypes() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Novo Serviço</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                {serviceToEdit ? "Editar Serviço" : "Novo Serviço"}
+              </h2>
+
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 Fechar
@@ -87,8 +111,10 @@ export function EventTypes() {
 
             <div className="p-6">
               <ServiceForm
+                key={serviceToEdit?.id ?? 'new-service'}
+                serviceToEdit={serviceToEdit}
                 onSuccess={() => {
-                  setIsModalOpen(false);
+                  handleCloseModal();
                   queryClient.invalidateQueries({ queryKey: ["services"] });
                 }}
               />

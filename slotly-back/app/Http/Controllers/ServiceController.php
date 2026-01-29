@@ -41,7 +41,12 @@ class ServiceController extends Controller
         }
 
         $validated = $request->validate([
-            'is_active' => 'required|boolean',
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'duration_minutes' => 'sometimes|integer|min:5',
+            'price' => 'sometimes|numeric|min:0',
+            'modality' => 'sometimes|in:online,in_person',
+            'is_active' => 'sometimes|boolean', // Permitimos o toggle também
         ]);
 
         $service->update($validated);
@@ -49,12 +54,14 @@ class ServiceController extends Controller
         return response()->json($service);
     }
 
-    public function destroy(Request $request, string $id)
+    public function destroy(Request $request, Service $service)
     {
-        $service = $request->user()->services()->findOrFail($id);
+        if ($service->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Ação não autorizada.'], 403);
+        }
 
         $service->delete();
 
-        return response()->json(['message' => 'Serviço removido']);
+        return response()->json(['message' => 'Serviço removido com sucesso.']);
     }
 }
