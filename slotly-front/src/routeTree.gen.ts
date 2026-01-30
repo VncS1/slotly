@@ -19,6 +19,7 @@ import { Route as Onboarding3RouteImport } from './routes/onboarding/3'
 import { Route as Onboarding2RouteImport } from './routes/onboarding/2'
 import { Route as Onboarding1RouteImport } from './routes/onboarding/1'
 import { Route as DashboardEventTypesRouteImport } from './routes/_dashboard/event-types'
+import { Route as DashboardAvailabilityRouteImport } from './routes/_dashboard/availability'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
@@ -69,9 +70,15 @@ const DashboardEventTypesRoute = DashboardEventTypesRouteImport.update({
   path: '/event-types',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAvailabilityRoute = DashboardAvailabilityRouteImport.update({
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_dashboard/availability': typeof DashboardAvailabilityRoute
   '/_dashboard/event-types': typeof DashboardEventTypesRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/availability'
     | '/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/availability'
     | '/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_dashboard'
+    | '/_dashboard/availability'
     | '/_dashboard/event-types'
     | '/onboarding/1'
     | '/onboarding/2'
@@ -226,14 +238,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEventTypesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/availability': {
+      id: '/_dashboard/availability'
+      path: '/availability'
+      fullPath: '/availability'
+      preLoaderRoute: typeof DashboardAvailabilityRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAvailabilityRoute: typeof DashboardAvailabilityRoute
   DashboardEventTypesRoute: typeof DashboardEventTypesRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAvailabilityRoute: DashboardAvailabilityRoute,
   DashboardEventTypesRoute: DashboardEventTypesRoute,
 }
 

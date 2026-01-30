@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ScheduleConfigController;
+use App\Http\Controllers\DateOverrideController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,10 +19,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('services', ServiceController::class);
-
-    Route::apiResource('services/{id}', ServiceController::class);
-
+    
     Route::put('/user/setup-slug', [AuthController::class, 'updateSlug']);
 
     Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
+
+    Route::get('/schedule-configs', [ScheduleConfigController::class, 'index']);
+
+    Route::post('/schedule-configs', [ScheduleConfigController::class, 'store']);
+
+    Route::apiResource('date-overrides', DateOverrideController::class)->only(['index', 'store', 'destroy']);
 });

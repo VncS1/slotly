@@ -1,4 +1,4 @@
-import { Edit2, Share2, Copy, Globe, Users, Edit } from "lucide-react";
+import { Share2, Copy, Globe, Users, Edit } from "lucide-react";
 import type { Service } from "../../../types/ServiceCardTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../../lib/api";

@@ -34,8 +34,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    
-    
+
+
     public function services()
     {
         return $this->hasMany(Service::class);
@@ -59,7 +59,12 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'client_id');
     }
 
-    public function categories(){
+    public function categories()
+    {
         return $this->belongsToMany(Category::class);
+    }
+    public function dateOverrides()
+    {
+        return $this->hasMany(DateOverride::class);
     }
 }
