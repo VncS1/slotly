@@ -13,10 +13,9 @@ return new class extends Migration {
         Schema::create('date_overrides', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('title'); // Ex: "Recesso de Fim de Ano"
-            $table->date('start_date');
-            $table->date('end_date'); // Pode ser a mesma que a start_date para um único dia
-            $table->boolean('is_closed')->default(false); // Define se o dia está bloqueado
+            $table->string('title');
+            $table->date('date'); // O CULPADO: Verifique se esta linha existe!
+            $table->boolean('is_closed')->default(true);
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->timestamps();

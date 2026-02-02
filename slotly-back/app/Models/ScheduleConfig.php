@@ -18,6 +18,13 @@ class ScheduleConfig extends Model
         'lunch_end_time',
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+        'lunch_start_time' => 'datetime:H:i',
+        'lunch_end_time' => 'datetime:H:i',
+    ];
+
     public function provider()
     {
         return $this->belongsTo(User::class, 'user_id');

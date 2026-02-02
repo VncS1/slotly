@@ -21,11 +21,9 @@ export const Route = createFileRoute("/_dashboard/availability")({
 export function AvailabilityPage() {
   const queryClient = useQueryClient();
 
-  // 1. Estados (Todos no topo)
   const [schedules, setSchedules] = useState<ScheduleConfig[]>([]);
   const [isOverrideModalOpen, setIsOverrideModalOpen] = useState(false);
 
-  // 2. Queries (Todas no topo)
   const { data: initialData, isLoading: isLoadingSchedules } = useQuery({
     queryKey: ["schedule-configs"],
     queryFn: async () => (await api.get("/schedule-configs")).data,
@@ -36,7 +34,6 @@ export function AvailabilityPage() {
     queryFn: async () => (await api.get("/date-overrides")).data,
   });
 
-  // 3. Mutations (Todas no topo)
   const saveMutation = useMutation({
     mutationFn: async (payload: ScheduleConfigRequest) => {
       return await api.post("/schedule-configs", payload);
@@ -68,12 +65,10 @@ export function AvailabilityPage() {
     },
   });
 
-  // 4. Effects
   useEffect(() => {
     if (initialData) setSchedules(initialData);
   }, [initialData]);
 
-  // 5. Handlers (Lógica de suporte)
   const handleUpdateDay = (newConfig: ScheduleConfig) => {
     setSchedules((prev) => {
       const filtered = prev.filter(
@@ -105,14 +100,12 @@ export function AvailabilityPage() {
     }
   };
 
-  // 6. SÓ AGORA os retornos condicionais
   if (isLoadingSchedules || isLoadingOverrides) {
     return (
       <div className="p-10 text-center text-gray-500">Carregando dados...</div>
     );
   }
 
-  // 7. JSX Final
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <header className="mb-8 flex justify-between items-end">
@@ -144,6 +137,7 @@ export function AvailabilityPage() {
         </div>
         <div className="mt-6 flex justify-end">
           <button
+            type="submit"
             onClick={handleSave}
             disabled={saveMutation.isPending}
             className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all disabled:opacity-50"

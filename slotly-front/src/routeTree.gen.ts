@@ -18,6 +18,7 @@ import { Route as RegisterClientRouteImport } from './routes/register/client'
 import { Route as Onboarding3RouteImport } from './routes/onboarding/3'
 import { Route as Onboarding2RouteImport } from './routes/onboarding/2'
 import { Route as Onboarding1RouteImport } from './routes/onboarding/1'
+import { Route as DashboardScheduledEventsRouteImport } from './routes/_dashboard/scheduled-events'
 import { Route as DashboardEventTypesRouteImport } from './routes/_dashboard/event-types'
 import { Route as DashboardAvailabilityRouteImport } from './routes/_dashboard/availability'
 
@@ -65,6 +66,12 @@ const Onboarding1Route = Onboarding1RouteImport.update({
   path: '/onboarding/1',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardScheduledEventsRoute =
+  DashboardScheduledEventsRouteImport.update({
+    id: '/scheduled-events',
+    path: '/scheduled-events',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardEventTypesRoute = DashboardEventTypesRouteImport.update({
   id: '/event-types',
   path: '/event-types',
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
+  '/scheduled-events': typeof DashboardScheduledEventsRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -92,6 +100,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
+  '/scheduled-events': typeof DashboardScheduledEventsRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -106,6 +115,7 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_dashboard/availability': typeof DashboardAvailabilityRoute
   '/_dashboard/event-types': typeof DashboardEventTypesRoute
+  '/_dashboard/scheduled-events': typeof DashboardScheduledEventsRoute
   '/onboarding/1': typeof Onboarding1Route
   '/onboarding/2': typeof Onboarding2Route
   '/onboarding/3': typeof Onboarding3Route
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/event-types'
+    | '/scheduled-events'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/'
     | '/availability'
     | '/event-types'
+    | '/scheduled-events'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/_dashboard/availability'
     | '/_dashboard/event-types'
+    | '/_dashboard/scheduled-events'
     | '/onboarding/1'
     | '/onboarding/2'
     | '/onboarding/3'
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Onboarding1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboard/scheduled-events': {
+      id: '/_dashboard/scheduled-events'
+      path: '/scheduled-events'
+      fullPath: '/scheduled-events'
+      preLoaderRoute: typeof DashboardScheduledEventsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/event-types': {
       id: '/_dashboard/event-types'
       path: '/event-types'
@@ -251,11 +271,13 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardAvailabilityRoute: typeof DashboardAvailabilityRoute
   DashboardEventTypesRoute: typeof DashboardEventTypesRoute
+  DashboardScheduledEventsRoute: typeof DashboardScheduledEventsRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAvailabilityRoute: DashboardAvailabilityRoute,
   DashboardEventTypesRoute: DashboardEventTypesRoute,
+  DashboardScheduledEventsRoute: DashboardScheduledEventsRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

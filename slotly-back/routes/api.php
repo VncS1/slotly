@@ -29,4 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/schedule-configs', [ScheduleConfigController::class, 'store']);
 
     Route::apiResource('date-overrides', DateOverrideController::class)->only(['index', 'store', 'destroy']);
+
+    Route::get('/appointments', [AppointmentController::class, 'index']);
 });

@@ -6,7 +6,7 @@ export function DateOverrideForm({
   onSubmit,
   onCancel,
 }: {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: DateOverride) => void;
   onCancel: () => void;
 }) {
   const {
@@ -23,6 +23,16 @@ export function DateOverrideForm({
   });
 
   const isClosed = watch("is_closed");
+
+  const handleDataSubmit = (data: any) => {
+    const cleanData: DateOverride = {
+      ...data,
+      start_time: data.is_closed ? null : data.start_time,
+      end_time: data.is_closed ? null : data.end_time,
+    };
+
+    onSubmit(cleanData);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -82,7 +92,11 @@ export function DateOverrideForm({
           />
         </div>
       )}
-
+      {errors.start_time && (
+        <p className="text-red-500 text-xs mt-1">
+          {errors.start_time.message as string}
+        </p>
+      )}
       <div className="flex justify-end gap-3 pt-4">
         <button
           type="button"

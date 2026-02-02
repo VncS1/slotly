@@ -38,7 +38,9 @@ export function DayScheduleRow({
 
   const updateField = (field: keyof ScheduleConfig, value: string | null) => {
     if (config) {
-      onChange({ ...config, [field]: value });
+      const sanitizedValue =
+        typeof value === "string" ? value.substring(0, 5) : value;
+      onChange({ ...config, [field]: sanitizedValue });
     }
   };
 

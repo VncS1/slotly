@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'provider',
             'business_name' => 'Barbearia do João',
             'business_slug' => 'barbearia-do-joao',
+            'onboarding_complete' => true,
         ]);
 
         // 2.1 Vincular Provider à Categoria (Muitos-para-Muitos)
