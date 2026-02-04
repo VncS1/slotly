@@ -35,7 +35,6 @@ export function ServiceForm({ onSuccess, serviceToEdit }: ServiceFormProps) {
   const onSubmit = async (data: ServiceFormValues) => {
     try {
       if (isEditing) {
-        console.log("Dados que serão enviados:", data)
         await api.put(`/services/${serviceToEdit.id}`, data);
       } else {
         await api.post("/services", data);

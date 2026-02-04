@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { AppointmentTable } from "../../components/dashboard/scheduled-events/AppointmentTable";
-import { AppointmentFilters } from "../../types/Appointment";
+import type { AppointmentFilters } from "../../types/Appointment";
 
 export const Route = createFileRoute("/_dashboard/scheduled-events")({
   validateSearch: (search: Record<string, unknown>): AppointmentFilters => {
@@ -21,11 +21,21 @@ export const Route = createFileRoute("/_dashboard/scheduled-events")({
   component: ScheduledEventsPage,
 });
 
+const statusLabels = {
+  upcoming: "Em breve",
+  pending: "Pendentes",
+  past: "Histórico",
+  "date-range": "Por período",
+};
+
 export function ScheduledEventsPage() {
   const { status, page, start_date, end_date } = useSearch({
     from: "/_dashboard/scheduled-events",
   });
-  const navigate = useNavigate({ from: "/_dashboard/scheduled-events" });
+
+  const navigate = useNavigate({
+    from: "/scheduled-events",
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["appointments", status, page, start_date, end_date],
@@ -60,15 +70,15 @@ export function ScheduledEventsPage() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Scheduled Events Manager
+            Gerenciador de Serviços
           </h1>
           <p className="text-gray-500">
             Gerencie seus agendamentos e acompanhe seu fluxo de trabalho.
           </p>
         </div>
-        <button className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2">
+        {/* <button className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-sm flex items-center gap-2">
           Add New Event
-        </button>
+        </button> */}
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -83,7 +93,7 @@ export function ScheduledEventsPage() {
                   : "border-transparent text-gray-400 hover:text-gray-600"
               }`}
             >
-              {tab.replace("-", " ")}
+              {statusLabels[tab as keyof typeof statusLabels]}{" "}
             </button>
           ))}
         </div>

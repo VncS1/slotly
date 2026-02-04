@@ -3,12 +3,13 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { api } from "../lib/api";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    const token = localStorage.getItem("slotly_token");
-    if (!token) {
-      throw redirect({
-        to: "/login",
-      });
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuthenticated) {
+      throw redirect({ to: "/login" });
+    }
+
+    if (context.auth.user?.role === "provider") {
+      throw redirect({ to: "/event-types" });
     }
   },
   component: Index,

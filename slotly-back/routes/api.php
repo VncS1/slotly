@@ -6,12 +6,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ScheduleConfigController;
 use App\Http\Controllers\DateOverrideController;
-
+use App\Http\Controllers\AppointmentController; 
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -31,4 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('date-overrides', DateOverrideController::class)->only(['index', 'store', 'destroy']);
 
     Route::get('/appointments', [AppointmentController::class, 'index']);
+
+    Route::patch('/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
+});
+
+Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
+    Route::post('/');
 });

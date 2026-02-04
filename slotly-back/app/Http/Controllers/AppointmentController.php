@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
@@ -11,7 +11,7 @@ class AppointmentController extends Controller
 {
     public function index(Request $request)
     {
-        
+
         $query = Appointment::with(['client', 'service'])
             ->where('provider_id', auth()->id());
 
@@ -20,26 +20,26 @@ class AppointmentController extends Controller
         $this->applyDateRangeFilters($query, $request);
 
         return $query->orderBy('start_time', 'asc')
-                     ->paginate(10)
-                     ->withQueryString(); 
+            ->paginate(10)
+            ->withQueryString();
     }
 
     private function applyStatusFilters($query, $status)
     {
         switch ($status) {
             case 'upcoming':
-                
+
                 $query->where('start_time', '>=', now())
-                      ->where('status', 'active');
+                    ->where('status', 'active');
                 break;
 
             case 'pending':
-                
+
                 $query->where('status', 'pending');
                 break;
 
             case 'past':
-                
+
                 $query->where('start_time', '<', now());
                 break;
         }
@@ -53,5 +53,30 @@ class AppointmentController extends Controller
 
             $query->whereBetween('start_time', [$start, $end]);
         }
+    }
+
+
+
+    public function updateStatus(Request $request, $id)
+    {
+
+        $request->validate([
+            'status' => 'required|in:active,completed,canceled'
+        ]);
+
+
+        $appointment = Appointment::where('id', $id)
+            ->where('provider_id', auth()->id())
+            ->firstOrFail();
+
+
+        $appointment->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            'message' => 'Status atualizado com sucesso!',
+            'data' => $appointment
+        ]);
     }
 }

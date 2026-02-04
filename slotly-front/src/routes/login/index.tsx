@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-//
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +33,7 @@ export function Login() {
       setServerError(null);
 
       const response = await api.post("/login", data);
-      
+
       const { access_token, user } = response.data;
 
       if (user.role !== userType) {
@@ -48,6 +47,7 @@ export function Login() {
 
       localStorage.setItem("slotly_token", access_token);
       localStorage.setItem("slotly_user", JSON.stringify(user));
+      localStorage.setItem("slotly_user_role", user.role);
 
       if (user.role === "provider" && user.onboarding_complete) {
         await navigate({ to: "/event-types" });

@@ -13,21 +13,18 @@ return new class extends Migration {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
 
-            // Quem está oferecendo o serviço
             $table->foreignId('provider_id')->constrained('users')->onDelete('cascade');
 
-            // Quem está agendando (pode ser null se for agendamento manual do admin, mas vamos focar no app)
             $table->foreignId('client_id')->constrained('users')->onDelete('cascade');
 
-            // Qual serviço
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
 
-            $table->dateTime('start_time'); // Data e Hora do início
-            $table->dateTime('end_time');   // Data e Hora do fim (calculado via duração)
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
 
-            $table->enum('status', ['pending', 'confirmed', 'canceled', 'completed'])->default('pending');
+            $table->enum('status', ['active', 'pending', 'canceled', 'completed'])->default('pending');
 
-            $table->text('notes')->nullable(); // Observações do cliente
+            $table->text('notes')->nullable();
 
             $table->timestamps();
         });

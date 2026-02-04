@@ -1,4 +1,4 @@
-export type AppointmentStatus = 'active' | 'pending' | 'canceled';
+export type AppointmentStatus = 'active' | 'pending' | 'canceled' | 'completed';
 
 export interface Appointment {
   id: number;
@@ -11,11 +11,6 @@ export interface Appointment {
 export interface AppointmentFilters {
   status: 'upcoming' | 'pending' | 'past' | 'date-range';
   page: number;
-}
-
-export interface AppointmentFilters {
-  status: 'upcoming' | 'pending' | 'past' | 'date-range';
-  page: number;
-  start_date?: string; // Formato YYYY-MM-DD
-  end_date?: string;   // Formato YYYY-MM-DD
+  start_date?: string; 
+  end_date?: string;   
 }
