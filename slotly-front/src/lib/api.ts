@@ -9,20 +9,19 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("slotly_token");
-
-  if (token && token !== "undefined" && token !== "null") {
+  if (token && token !== "undefined") {
     config.headers.Authorization = `Bearer ${token}`;
-  } else {
-    delete config.headers.Authorization;
   }
-
   return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 &&
+      !error.config.url?.includes("/login")
+    ) {
       localStorage.removeItem("slotly_token");
       localStorage.removeItem("slotly_user");
 

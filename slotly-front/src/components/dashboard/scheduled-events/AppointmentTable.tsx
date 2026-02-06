@@ -6,6 +6,13 @@ interface AppointmentTableProps {
   isLoading: boolean;
 }
 
+const statusTranslations: Record<string, string> = {
+  active: "Ativo",
+  pending: "Pendente",
+  canceled: "Cancelado",
+  completed: "Concluído",
+};
+
 export function AppointmentTable({ data, isLoading }: AppointmentTableProps) {
   const getStatusStyle = (status: string) => {
     const styles = {
@@ -36,15 +43,15 @@ export function AppointmentTable({ data, isLoading }: AppointmentTableProps) {
   }
 
   return (
-    <div className="overflow-y-auto max-h-[500px] scrollbar-hide">
+    <div className="overflow-x-auto">
       <table className="min-w-full text-left border-collapse">
         <thead>
           <tr className="text-gray-400 text-sm uppercase tracking-wider">
-            <th className="px-8 py-5 font-medium">Data/Horário</th>
+            <th className="px-8 py-5 font-medium w-48">Data/Horário</th>
             <th className="px-8 py-5 font-medium">Cliente</th>
-            <th className="px-8 py-5 font-medium">Serviço</th>
-            <th className="px-8 py-5 font-medium">Status</th>
-            <th className="px-8 py-5 font-medium text-right">Ações</th>
+            <th className="px-8 py-5 font-medium w-64">Serviço</th>
+            <th className="px-8 py-5 font-medium w-32">Status</th>
+            <th className="px-8 py-5 font-medium text-right w-0">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
@@ -58,33 +65,60 @@ export function AppointmentTable({ data, isLoading }: AppointmentTableProps) {
               </td>
             </tr>
           ) : (
-            data.map((apt) => (
-              <tr
-                key={apt.id}
-                className="hover:bg-gray-50/50 transition-colors group"
-              >
-                <td className="px-8 py-5 text-gray-600">
-                  {formatDateTime(apt.start_time)}
-                </td>
-                <td className="px-8 py-5 font-bold text-gray-900">
-                  {apt.client.name}
-                </td>
-                <td className="px-8 py-5 text-gray-600">{apt.service.name}</td>
-                <td className="px-8 py-5">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusStyle(apt.status)}`}
+            data.map((apt) => {
+              const isCanceled = apt.status === "canceled";
+              const isCompleted = apt.status === "completed";
+
+              return (
+                <tr
+                  key={apt.id}
+                  className={`
+                    transition-colors group
+                    ${isCanceled && "opacity-50 bg-gray-50/30"} 
+                    ${isCompleted && "bg-blue-50/10"} 
+                    ${!isCanceled && !isCompleted && "hover:bg-gray-50/50"}
+                  `}
+                >
+                  <td
+                    className={`px-8 py-5 whitespace-nowrap text-sm ${isCompleted ? "text-blue-700/70" : "text-gray-600"}`}
                   >
-                    {apt.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <AppointmentActions
-                    appointmentId={apt.id}
-                    currentStatus={apt.status}
-                  />
-                </td>
-              </tr>
-            ))
+                    {formatDateTime(apt.start_time)}
+                  </td>
+
+                  <td
+                    className={`
+                    px-8 py-5 font-bold text-sm
+                    ${isCanceled ? "text-gray-400 line-through" : "text-gray-900"}
+                    ${isCompleted ? "text-blue-900/80" : ""}
+                  `}
+                  >
+                    {apt.client.name}
+                  </td>
+
+                  <td
+                    className={`px-8 py-5 text-sm ${isCanceled ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    {apt.service.name}
+                  </td>
+
+                  <td className="px-8 py-5 whitespace-nowrap">
+                    <span
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusStyle(apt.status)}`}
+                    >
+                      {/* 2. Aplicamos a tradução aqui */}
+                      {statusTranslations[apt.status] || apt.status}
+                    </span>
+                  </td>
+
+                  <td className="px-8 py-5 text-right">
+                    <AppointmentActions
+                      appointmentId={apt.id}
+                      currentStatus={apt.status}
+                    />
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>

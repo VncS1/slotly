@@ -20,6 +20,7 @@ function OnboardingStep1() {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const user = JSON.parse(localStorage.getItem("slotly_user") || "{}");
+  const firstName = user.name?.split(" ")[0] || "Profissional";
 
   const {
     register,
@@ -33,12 +34,17 @@ function OnboardingStep1() {
     try {
       setServerError(null);
 
-      await api.put("/user/setup-slug", data);
+      const response = await api.put("/user/setup-slug", data);
+
+      const updatedUser = response.data.user;
+      localStorage.setItem("slotly_user", JSON.stringify(updatedUser));
 
       await navigate({ to: "/onboarding/2" });
     } catch (error) {
       if (error instanceof AxiosError) {
-        setServerError(error.response?.data?.message || "Erro ao salvar URL.");
+        setServerError(
+          error.response?.data?.message || "Erro ao salvar sua URL.",
+        );
       }
     }
   };
@@ -78,18 +84,19 @@ function OnboardingStep1() {
           <div className="bg-blue-600 h-2 rounded-full w-1/3 transition-all duration-500"></div>
         </div>
         <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
-          <span className="text-blue-600">Business URL</span>
-          <span>Profile Setup</span>
-          <span>Availability</span>
+          <span className="text-blue-600">URL do seu negócio!</span>
+          <span>Ajustes de Perfil</span>
+          <span>Serviços</span>
         </div>
       </div>
 
       <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-8 w-full max-w-3xl">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
-          Bem-vindo! Vamos configurar sua página.
+          Bem-vindo, {firstName}! 👋
         </h1>
         <p className="text-gray-500 mb-8">
-          Escolha uma URL única onde seus clientes poderão te encontrar.
+          Faltam poucos passos para sua página de agendamentos ficar pronta.
+          Comece definindo sua URL única.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

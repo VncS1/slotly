@@ -31,34 +31,37 @@ export function Login() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setServerError(null);
-
       const response = await api.post("/login", data);
-
       const { access_token, user } = response.data;
 
       if (user.role !== userType) {
         setServerError(
-          `Identificamos que você é um ${user.role === "provider" ? "Profissional" : "Cliente"}. Mudamos você para a aba correta!`,
+          `Conta não encontrada como ${userType === "client" ? "Cliente" : "Profissional"}.`,
         );
-        setUserType(user.role as "client" | "provider");
-
         return;
       }
 
       localStorage.setItem("slotly_token", access_token);
       localStorage.setItem("slotly_user", JSON.stringify(user));
-      localStorage.setItem("slotly_user_role", user.role);
 
-      if (user.role === "provider" && user.onboarding_complete) {
-        await navigate({ to: "/event-types" });
-      } else if (user.role === "provider" && !user.onboarding_complete) {
-        await navigate({ to: "/onboarding/1" });
-      } else {
-        await navigate({ to: "/" });
+      if (user.role === "provider") {
+        if (user.onboarding_complete) {
+          await navigate({
+            to: "/scheduled-events",
+            search: {
+              status: "upcoming",
+              page: 1,
+            },
+          });
+        } else {
+          await navigate({ to: "/onboarding/1" });
+        }
       }
     } catch (error) {
       if (error instanceof AxiosError) {
-        setServerError(error.response?.data?.message || "Erro ao entrar.");
+        setServerError(
+          error.response?.data?.message || "Credenciais inválidas.",
+        );
       }
     }
   };
