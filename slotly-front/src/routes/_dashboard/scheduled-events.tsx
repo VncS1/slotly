@@ -3,7 +3,7 @@ import {
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AppointmentTable } from "../../components/dashboard/scheduled-events/AppointmentTable";
@@ -41,20 +41,19 @@ export function ScheduledEventsPage() {
     queryKey: ["appointments", status, page, start_date, end_date],
     queryFn: async () => {
       const response = await api.get("/appointments", {
-        // Enviamos o per_page fixo em 10 para alinhar com o Laravel
         params: { status, page, start_date, end_date, per_page: 10 },
       });
       return response.data;
     },
-    // A query só roda se NÃO for período, ou se o período tiver as duas datas
+
+    placeholderData: keepPreviousData,
     enabled: status !== "date-range" || (!!start_date && !!end_date),
   });
 
   const appointments = data?.data || [];
-  const lastPage = data?.meta?.last_page || 1;
+  const lastPage = data?.last_page || 1; 
 
   const handleTabChange = (newStatus: string) => {
-    // Pegamos a data de hoje formatada em YYYY-MM-DD
     const today = new Date().toISOString().split("T")[0];
 
     navigate({
@@ -62,8 +61,7 @@ export function ScheduledEventsPage() {
         ...prev,
         status: newStatus as any,
         page: 1,
-        // Se mudar para 'date-range', injetamos hoje por padrão
-        // Se mudar para outra tab, limpamos as datas
+
         start_date: newStatus === "date-range" ? today : undefined,
         end_date: newStatus === "date-range" ? today : undefined,
       }),

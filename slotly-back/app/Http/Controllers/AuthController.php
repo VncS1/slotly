@@ -11,9 +11,6 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-
-
-
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -109,29 +106,41 @@ class AuthController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $fields = $request->validate([
-            'profile_photo_path' => 'image|max:2048|mimes:jpg,png,jpeg|nullable',
-            'bio' => 'nullable|string|max:1000'
-        ], [
-            'bio.max' => 'Biografia pode possuir no máximo 1000 caracteres!',
-            'profile_photo_path.image' => 'O arquivo precisa conter uma imagem.',
-            'profile_photo_path.mimes' => 'Utilize um dos formatos de imagem a seguir: jpg, png ou jpeg.',
-            'profile_photo_path.max' => 'Imagem pode possuir no máximo 2mb.'
-        ]);
-
         $user = $request->user();
+
+        
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'bio' => 'nullable|string|max:1000',
+            'profile_photo_path' => 'image|max:2048|mimes:jpg,png,jpeg|nullable',
+            'current_password' => 'nullable|required_with:new_password',
+            'new_password' => 'nullable|min:8|confirmed', 
+        ]);
 
         if ($request->hasFile('profile_photo_path')) {
             $caminho = $request->file('profile_photo_path')->store('pfp', 'public');
-
-            $fields['profile_photo_path'] = $caminho;
+            $user->profile_photo_path = $caminho;
         }
 
-        $user->update($fields);
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['message' => 'Senha atual incorreta'], 422);
+            }
+            $user->password = Hash::make($request->new_password);
+        }
         
+        $user->fill([
+            'name' => $validatedData['name'],
+            'phone' => $validatedData['phone'] ?? $user->phone,
+            'bio' => $validatedData['bio'] ?? $user->bio,
+        ]);
+
+        $user->save();
+
         return response()->json([
             'message' => 'Perfil atualizado com sucesso!',
-            'user' => $user
+            'user' => $user->fresh() 
         ]);
     }
 }

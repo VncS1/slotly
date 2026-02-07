@@ -92,20 +92,19 @@ export function AppointmentTable({ data, isLoading }: AppointmentTableProps) {
                     ${isCompleted ? "text-blue-900/80" : ""}
                   `}
                   >
-                    {apt.client.name}
+                    {apt.client?.name || "Cliente não encontrado"}
                   </td>
 
                   <td
                     className={`px-8 py-5 text-sm ${isCanceled ? "text-gray-400" : "text-gray-600"}`}
                   >
-                    {apt.service.name}
+                    {apt.service?.name || "Serviço não encontrado"}
                   </td>
 
                   <td className="px-8 py-5 whitespace-nowrap">
                     <span
                       className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusStyle(apt.status)}`}
                     >
-                      {/* 2. Aplicamos a tradução aqui */}
                       {statusTranslations[apt.status] || apt.status}
                     </span>
                   </td>

@@ -5,23 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
     public function index(Request $request)
     {
+        $query = Appointment::with(['client', 'service']) 
+        ->where('provider_id', Auth::id());
 
-        $query = Appointment::with(['client', 'service'])
-            ->where('provider_id', auth()->id());
-
-        $this->applyStatusFilters($query, $request->query('status'));
-
-        $this->applyDateRangeFilters($query, $request);
+        if ($request->status === 'upcoming') {
+            $query->where('start_time', '>=', now())->where('status', 'active');
+        } elseif ($request->status === 'past') {
+            $query->where('start_time', '<', now());
+        }
 
         return $query->orderBy('start_time', 'asc')
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate($request->get('per_page', 10));
     }
 
     private function applyStatusFilters($query, $status)
@@ -66,7 +67,7 @@ class AppointmentController extends Controller
 
 
         $appointment = Appointment::where('id', $id)
-            ->where('provider_id', auth()->id())
+            ->where('provider_id', Auth::id())
             ->firstOrFail();
 
 

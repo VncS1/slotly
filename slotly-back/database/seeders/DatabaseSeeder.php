@@ -15,9 +15,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-
+        // 1. Setup inicial (Mantido o seu padrão)
         $catBarber = Category::firstOrCreate(['slug' => 'barbearia'], ['name' => 'Barbearia']);
-
 
         $provider = User::updateOrCreate(
             ['email' => 'provider@teste.com'],
@@ -34,7 +33,6 @@ class DatabaseSeeder extends Seeder
 
         $provider->categories()->sync([$catBarber->id]);
 
-
         foreach (range(1, 5) as $day) {
             ScheduleConfig::updateOrCreate(
                 ['user_id' => $provider->id, 'day_of_week' => $day],
@@ -47,7 +45,6 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-
         $corte = Service::updateOrCreate(
             ['user_id' => $provider->id, 'name' => 'Corte Masculino'],
             ['description' => 'Corte com máquina e tesoura', 'duration_minutes' => 30, 'price' => 35.00, 'is_active' => true]
@@ -58,72 +55,47 @@ class DatabaseSeeder extends Seeder
             ['description' => 'Barba tradicional', 'duration_minutes' => 20, 'price' => 25.00, 'is_active' => true]
         );
 
+        // 2. Criação de Clientes (Mais fácil de gerenciar em array)
+        $clients = [];
+        $clientData = [
+            ['email' => 'maria@cliente.com', 'name' => 'Maria Silva'],
+            ['email' => 'jose@cliente.com', 'name' => 'José Santos'],
+            ['email' => 'ana@cliente.com', 'name' => 'Ana Oliveira'],
+            ['email' => 'carlos@cliente.com', 'name' => 'Carlos Ferreira'],
+        ];
 
-        $client1 = User::firstOrCreate(['email' => 'maria@cliente.com'], ['name' => 'Maria Silva', 'password' => Hash::make('12345678'), 'role' => 'client']);
-        $client2 = User::firstOrCreate(['email' => 'jose@cliente.com'], ['name' => 'José Santos', 'password' => Hash::make('12345678'), 'role' => 'client']);
-        $client3 = User::firstOrCreate(['email' => 'ana@cliente.com'], ['name' => 'Ana Oliveira', 'password' => Hash::make('12345678'), 'role' => 'client']);
+        foreach ($clientData as $data) {
+            $clients[] = User::firstOrCreate(
+                ['email' => $data['email']],
+                ['name' => $data['name'], 'password' => Hash::make('12345678'), 'role' => 'client']
+            );
+        }
 
+        // --- MÃO NA MASSA: GERADOR DE VOLUME PARA PAGINAÇÃO ---
 
+        $statuses = ['active', 'pending', 'completed', 'canceled'];
+        $services = [$corte->id, $barba->id];
 
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client1->id,
-            'service_id' => $corte->id,
-            'start_time' => Carbon::tomorrow()->setHour(10),
-            'end_time' => Carbon::tomorrow()->setHour(10)->addMinutes(30),
-            'status' => 'active',
-            'notes' => 'Cliente nova, quer degradê.',
-        ]);
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client2->id,
-            'service_id' => $barba->id,
-            'start_time' => Carbon::tomorrow()->setHour(14),
-            'end_time' => Carbon::tomorrow()->setHour(14)->addMinutes(20),
-            'status' => 'active',
-        ]);
-
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client3->id,
-            'service_id' => $corte->id,
-            'start_time' => Carbon::now()->addDays(2)->setHour(11),
-            'end_time' => Carbon::now()->addDays(2)->setHour(11)->addMinutes(30),
-            'status' => 'pending',
-            'notes' => 'Solicitou pelo app.',
-        ]);
-
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client1->id,
-            'service_id' => $barba->id,
-            'start_time' => Carbon::yesterday()->setHour(16),
-            'end_time' => Carbon::yesterday()->setHour(16)->addMinutes(20),
-            'status' => 'active',
-        ]);
-
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client2->id,
-            'service_id' => $corte->id,
-            'start_time' => Carbon::now()->addDays(3)->setHour(9),
-            'end_time' => Carbon::now()->addDays(3)->setHour(9)->addMinutes(30),
-            'status' => 'canceled',
-            'notes' => 'Desistiu por motivo de viagem.',
-        ]);
-
-        Appointment::create([
-            'provider_id' => $provider->id,
-            'client_id' => $client1->id,
-            'service_id' => $barba->id,
-            'start_time' => Carbon::yesterday()->setHour(16),
-            'end_time' => Carbon::yesterday()->setHour(16)->addMinutes(20),
-            'status' => 'completed',
-        ]);
+        // Vamos criar 40 agendamentos para garantir várias páginas
+        foreach (range(1, 40) as $index) {
+            $isPast = $index <= 20; // Metade no passado, metade no futuro
+            
+            // Gera uma data aleatória
+            $date = $isPast 
+                ? Carbon::now()->subDays(rand(1, 15)) 
+                : Carbon::now()->addDays(rand(1, 15));
+            
+            $startTime = $date->setHour(rand(9, 17))->setMinute(0)->setSecond(0);
+            
+            Appointment::create([
+                'provider_id' => $provider->id,
+                'client_id'   => $clients[array_rand($clients)]->id,
+                'service_id'  => $services[array_rand($services)],
+                'start_time'  => $startTime,
+                'end_time'    => (clone $startTime)->addMinutes(30),
+                'status'      => $isPast ? 'completed' : $statuses[array_rand(['active', 'pending'])],
+                'notes'       => "Agendamento de teste número $index",
+            ]);
+        }
     }
 }
