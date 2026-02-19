@@ -6,7 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ScheduleConfigController;
 use App\Http\Controllers\DateOverrideController;
-use App\Http\Controllers\AppointmentController; 
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ProviderController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -19,7 +21,7 @@ Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('services', ServiceController::class);
-    
+
     Route::put('/user/setup-slug', [AuthController::class, 'updateSlug']);
 
     Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
@@ -37,4 +39,6 @@ Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     Route::post('/');
+    Route::get('/providers', [ProviderController::class, 'index']);
+    Route::get('/providers/{slug}', [ProviderController::class, 'show']);
 });

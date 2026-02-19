@@ -56,6 +56,8 @@ export function Login() {
         } else {
           await navigate({ to: "/onboarding/1" });
         }
+      } else {
+        await navigate({ to: "/" });
       }
     } catch (error) {
       if (error instanceof AxiosError) {

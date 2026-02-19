@@ -10,9 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClientRouteImport } from './routes/_client'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as ClientIndexRouteImport } from './routes/_client/index'
 import { Route as RegisterProviderRouteImport } from './routes/register/provider'
 import { Route as RegisterClientRouteImport } from './routes/register/client'
 import { Route as Onboarding3RouteImport } from './routes/onboarding/3'
@@ -23,14 +24,14 @@ import { Route as DashboardScheduledEventsRouteImport } from './routes/_dashboar
 import { Route as DashboardIntegrationsRouteImport } from './routes/_dashboard/integrations'
 import { Route as DashboardEventTypesRouteImport } from './routes/_dashboard/event-types'
 import { Route as DashboardAvailabilityRouteImport } from './routes/_dashboard/availability'
+import { Route as ClientProviderSlugRouteImport } from './routes/_client/$providerSlug'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ClientRoute = ClientRouteImport.update({
+  id: '/_client',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterIndexRoute = RegisterIndexRouteImport.update({
@@ -42,6 +43,11 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ClientIndexRoute = ClientIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClientRoute,
 } as any)
 const RegisterProviderRoute = RegisterProviderRouteImport.update({
   id: '/register/provider',
@@ -94,9 +100,15 @@ const DashboardAvailabilityRoute = DashboardAvailabilityRouteImport.update({
   path: '/availability',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ClientProviderSlugRoute = ClientProviderSlugRouteImport.update({
+  id: '/$providerSlug',
+  path: '/$providerSlug',
+  getParentRoute: () => ClientRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof ClientIndexRoute
+  '/$providerSlug': typeof ClientProviderSlugRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/integrations': typeof DashboardIntegrationsRoute
@@ -111,7 +123,8 @@ export interface FileRoutesByFullPath {
   '/register/': typeof RegisterIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof ClientIndexRoute
+  '/$providerSlug': typeof ClientProviderSlugRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/integrations': typeof DashboardIntegrationsRoute
@@ -127,8 +140,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_client': typeof ClientRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_client/$providerSlug': typeof ClientProviderSlugRoute
   '/_dashboard/availability': typeof DashboardAvailabilityRoute
   '/_dashboard/event-types': typeof DashboardEventTypesRoute
   '/_dashboard/integrations': typeof DashboardIntegrationsRoute
@@ -139,6 +153,7 @@ export interface FileRoutesById {
   '/onboarding/3': typeof Onboarding3Route
   '/register/client': typeof RegisterClientRoute
   '/register/provider': typeof RegisterProviderRoute
+  '/_client/': typeof ClientIndexRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
 }
@@ -146,6 +161,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$providerSlug'
     | '/availability'
     | '/event-types'
     | '/integrations'
@@ -161,6 +177,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$providerSlug'
     | '/availability'
     | '/event-types'
     | '/integrations'
@@ -175,8 +192,9 @@ export interface FileRouteTypes {
     | '/register'
   id:
     | '__root__'
-    | '/'
+    | '/_client'
     | '/_dashboard'
+    | '/_client/$providerSlug'
     | '/_dashboard/availability'
     | '/_dashboard/event-types'
     | '/_dashboard/integrations'
@@ -187,12 +205,13 @@ export interface FileRouteTypes {
     | '/onboarding/3'
     | '/register/client'
     | '/register/provider'
+    | '/_client/'
     | '/login/'
     | '/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  ClientRoute: typeof ClientRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
   Onboarding1Route: typeof Onboarding1Route
   Onboarding2Route: typeof Onboarding2Route
@@ -212,11 +231,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
+    '/_client': {
+      id: '/_client'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof ClientRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register/': {
@@ -232,6 +251,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login/'
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_client/': {
+      id: '/_client/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof ClientIndexRouteImport
+      parentRoute: typeof ClientRoute
     }
     '/register/provider': {
       id: '/register/provider'
@@ -303,8 +329,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAvailabilityRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_client/$providerSlug': {
+      id: '/_client/$providerSlug'
+      path: '/$providerSlug'
+      fullPath: '/$providerSlug'
+      preLoaderRoute: typeof ClientProviderSlugRouteImport
+      parentRoute: typeof ClientRoute
+    }
   }
 }
+
+interface ClientRouteChildren {
+  ClientProviderSlugRoute: typeof ClientProviderSlugRoute
+  ClientIndexRoute: typeof ClientIndexRoute
+}
+
+const ClientRouteChildren: ClientRouteChildren = {
+  ClientProviderSlugRoute: ClientProviderSlugRoute,
+  ClientIndexRoute: ClientIndexRoute,
+}
+
+const ClientRouteWithChildren =
+  ClientRoute._addFileChildren(ClientRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardAvailabilityRoute: typeof DashboardAvailabilityRoute
@@ -327,7 +373,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  ClientRoute: ClientRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
   Onboarding1Route: Onboarding1Route,
   Onboarding2Route: Onboarding2Route,

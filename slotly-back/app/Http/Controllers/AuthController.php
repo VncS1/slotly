@@ -62,12 +62,15 @@ class AuthController extends Controller
             'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
         ]);
 
+        $role = $fields['role'] ?? 'client';
+
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => Hash::make($fields['password']),
             'business_name' => $fields['business_name'] ?? null,
-            'role' => $fields['role'] ?? 'client',
+            'role' => $role,
+            'onboarding' => ($role === 'client' ? 1 : 0),
         ]);
 
         $token = $user->createToken('slotly_token')->plainTextToken;
@@ -108,14 +111,14 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'bio' => 'nullable|string|max:1000',
             'profile_photo_path' => 'image|max:2048|mimes:jpg,png,jpeg|nullable',
             'current_password' => 'nullable|required_with:new_password',
-            'new_password' => 'nullable|min:8|confirmed', 
+            'new_password' => 'nullable|min:8|confirmed',
         ]);
 
         if ($request->hasFile('profile_photo_path')) {
@@ -129,7 +132,7 @@ class AuthController extends Controller
             }
             $user->password = Hash::make($request->new_password);
         }
-        
+
         $user->fill([
             'name' => $validatedData['name'],
             'phone' => $validatedData['phone'] ?? $user->phone,
@@ -140,7 +143,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Perfil atualizado com sucesso!',
-            'user' => $user->fresh() 
+            'user' => $user->fresh()
         ]);
     }
 }
