@@ -24,7 +24,10 @@ import { Route as DashboardScheduledEventsRouteImport } from './routes/_dashboar
 import { Route as DashboardIntegrationsRouteImport } from './routes/_dashboard/integrations'
 import { Route as DashboardEventTypesRouteImport } from './routes/_dashboard/event-types'
 import { Route as DashboardAvailabilityRouteImport } from './routes/_dashboard/availability'
+import { Route as ClientMeusAgendamentosRouteImport } from './routes/_client/meus-agendamentos'
+import { Route as ClientConfiguracoesRouteImport } from './routes/_client/configuracoes'
 import { Route as ClientProviderSlugRouteImport } from './routes/_client/$providerSlug'
+import { Route as ClientBookServiceIdRouteImport } from './routes/_client/book.$serviceId'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
@@ -100,15 +103,32 @@ const DashboardAvailabilityRoute = DashboardAvailabilityRouteImport.update({
   path: '/availability',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ClientMeusAgendamentosRoute = ClientMeusAgendamentosRouteImport.update({
+  id: '/meus-agendamentos',
+  path: '/meus-agendamentos',
+  getParentRoute: () => ClientRoute,
+} as any)
+const ClientConfiguracoesRoute = ClientConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => ClientRoute,
+} as any)
 const ClientProviderSlugRoute = ClientProviderSlugRouteImport.update({
   id: '/$providerSlug',
   path: '/$providerSlug',
+  getParentRoute: () => ClientRoute,
+} as any)
+const ClientBookServiceIdRoute = ClientBookServiceIdRouteImport.update({
+  id: '/book/$serviceId',
+  path: '/book/$serviceId',
   getParentRoute: () => ClientRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ClientIndexRoute
   '/$providerSlug': typeof ClientProviderSlugRoute
+  '/configuracoes': typeof ClientConfiguracoesRoute
+  '/meus-agendamentos': typeof ClientMeusAgendamentosRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/integrations': typeof DashboardIntegrationsRoute
@@ -121,10 +141,13 @@ export interface FileRoutesByFullPath {
   '/register/provider': typeof RegisterProviderRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
+  '/book/$serviceId': typeof ClientBookServiceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ClientIndexRoute
   '/$providerSlug': typeof ClientProviderSlugRoute
+  '/configuracoes': typeof ClientConfiguracoesRoute
+  '/meus-agendamentos': typeof ClientMeusAgendamentosRoute
   '/availability': typeof DashboardAvailabilityRoute
   '/event-types': typeof DashboardEventTypesRoute
   '/integrations': typeof DashboardIntegrationsRoute
@@ -137,12 +160,15 @@ export interface FileRoutesByTo {
   '/register/provider': typeof RegisterProviderRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
+  '/book/$serviceId': typeof ClientBookServiceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_client': typeof ClientRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_client/$providerSlug': typeof ClientProviderSlugRoute
+  '/_client/configuracoes': typeof ClientConfiguracoesRoute
+  '/_client/meus-agendamentos': typeof ClientMeusAgendamentosRoute
   '/_dashboard/availability': typeof DashboardAvailabilityRoute
   '/_dashboard/event-types': typeof DashboardEventTypesRoute
   '/_dashboard/integrations': typeof DashboardIntegrationsRoute
@@ -156,12 +182,15 @@ export interface FileRoutesById {
   '/_client/': typeof ClientIndexRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
+  '/_client/book/$serviceId': typeof ClientBookServiceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$providerSlug'
+    | '/configuracoes'
+    | '/meus-agendamentos'
     | '/availability'
     | '/event-types'
     | '/integrations'
@@ -174,10 +203,13 @@ export interface FileRouteTypes {
     | '/register/provider'
     | '/login/'
     | '/register/'
+    | '/book/$serviceId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$providerSlug'
+    | '/configuracoes'
+    | '/meus-agendamentos'
     | '/availability'
     | '/event-types'
     | '/integrations'
@@ -190,11 +222,14 @@ export interface FileRouteTypes {
     | '/register/provider'
     | '/login'
     | '/register'
+    | '/book/$serviceId'
   id:
     | '__root__'
     | '/_client'
     | '/_dashboard'
     | '/_client/$providerSlug'
+    | '/_client/configuracoes'
+    | '/_client/meus-agendamentos'
     | '/_dashboard/availability'
     | '/_dashboard/event-types'
     | '/_dashboard/integrations'
@@ -208,6 +243,7 @@ export interface FileRouteTypes {
     | '/_client/'
     | '/login/'
     | '/register/'
+    | '/_client/book/$serviceId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -329,6 +365,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAvailabilityRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_client/meus-agendamentos': {
+      id: '/_client/meus-agendamentos'
+      path: '/meus-agendamentos'
+      fullPath: '/meus-agendamentos'
+      preLoaderRoute: typeof ClientMeusAgendamentosRouteImport
+      parentRoute: typeof ClientRoute
+    }
+    '/_client/configuracoes': {
+      id: '/_client/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ClientConfiguracoesRouteImport
+      parentRoute: typeof ClientRoute
+    }
     '/_client/$providerSlug': {
       id: '/_client/$providerSlug'
       path: '/$providerSlug'
@@ -336,17 +386,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientProviderSlugRouteImport
       parentRoute: typeof ClientRoute
     }
+    '/_client/book/$serviceId': {
+      id: '/_client/book/$serviceId'
+      path: '/book/$serviceId'
+      fullPath: '/book/$serviceId'
+      preLoaderRoute: typeof ClientBookServiceIdRouteImport
+      parentRoute: typeof ClientRoute
+    }
   }
 }
 
 interface ClientRouteChildren {
   ClientProviderSlugRoute: typeof ClientProviderSlugRoute
+  ClientConfiguracoesRoute: typeof ClientConfiguracoesRoute
+  ClientMeusAgendamentosRoute: typeof ClientMeusAgendamentosRoute
   ClientIndexRoute: typeof ClientIndexRoute
+  ClientBookServiceIdRoute: typeof ClientBookServiceIdRoute
 }
 
 const ClientRouteChildren: ClientRouteChildren = {
   ClientProviderSlugRoute: ClientProviderSlugRoute,
+  ClientConfiguracoesRoute: ClientConfiguracoesRoute,
+  ClientMeusAgendamentosRoute: ClientMeusAgendamentosRoute,
   ClientIndexRoute: ClientIndexRoute,
+  ClientBookServiceIdRoute: ClientBookServiceIdRoute,
 }
 
 const ClientRouteWithChildren =

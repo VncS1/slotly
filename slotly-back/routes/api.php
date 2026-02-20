@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::apiResource('services', ServiceController::class);
+    Route::apiResource('services', ServiceController::class)->except(['show']);
 
     Route::put('/user/setup-slug', [AuthController::class, 'updateSlug']);
 
@@ -39,6 +39,20 @@ Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     Route::post('/');
+
     Route::get('/providers', [ProviderController::class, 'index']);
+
     Route::get('/providers/{slug}', [ProviderController::class, 'show']);
+
+    Route::get('/services/{id}', [ServiceController::class, 'show']);
+
+    Route::get('/services/{id}/availability', [ServiceController::class, 'availability']);
+
+    Route::get('/appointments', [AppointmentController::class, 'index']);
+
+    Route::post('/appointments', [AppointmentController::class, 'store']);
+
+    Route::get('/client/appointments', [AppointmentController::class, 'clientIndex']);
+
+    Route::patch('/appointments/{id}/cancel', [AppointmentController::class, 'cancel']);
 });

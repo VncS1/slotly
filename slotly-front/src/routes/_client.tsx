@@ -69,16 +69,16 @@ function ClientLayout() {
             active={currentPath === "/"}
           />
           <SidebarItem
-            to="/appointments"
+            to="/meus-agendamentos"
             icon={<Calendar size={20} />}
             label="Meus Agendamentos"
-            active={currentPath.includes("appointments")}
+            active={currentPath.includes("meus-agendamentos")}
           />
           <SidebarItem
-            to="/settings"
+            to="/configuracoes"
             icon={<Settings size={20} />}
             label="Configurações"
-            active={currentPath.includes("settings")}
+            active={currentPath.includes("configuracoes")}
           />
         </nav>
 

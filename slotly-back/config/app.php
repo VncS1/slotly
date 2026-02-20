@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('Slotly', 'Slotly'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,8 +65,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
-
+    'timezone' => 'America/Sao_Paulo',
+    
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

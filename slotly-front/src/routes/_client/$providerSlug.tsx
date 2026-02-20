@@ -127,7 +127,8 @@ function ProviderProfile() {
               {services.map((service: any) => (
                 <Link
                   key={service.id}
-                  to={`/book/${service.id}`}
+                  params={{ serviceId: service.id }}
+                  to={`/book/$serviceId`}
                   className="group flex items-center p-4 bg-white rounded-2xl border border-gray-100 hover:border-[#20C997]/30 hover:shadow-md transition-all duration-300 cursor-pointer"
                 >
                   <div className="w-12 h-12 shrink-0 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500 group-hover:bg-[#20C997]/10 group-hover:text-[#20C997] transition-colors mr-5">

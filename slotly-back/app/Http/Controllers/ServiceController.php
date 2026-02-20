@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\DateOverride;
+use App\Models\ScheduleConfig;
+use App\Models\Appointment;
+
+use Carbon\Carbon;
 
 class ServiceController extends Controller
 {
@@ -46,7 +51,7 @@ class ServiceController extends Controller
             'duration_minutes' => 'sometimes|integer|min:5',
             'price' => 'sometimes|numeric|min:0',
             'modality' => 'sometimes|in:online,in_person',
-            'is_active' => 'sometimes|boolean', // Permitimos o toggle também
+            'is_active' => 'sometimes|boolean',
         ]);
 
         $service->update($validated);
@@ -63,5 +68,73 @@ class ServiceController extends Controller
         $service->delete();
 
         return response()->json(['message' => 'Serviço removido com sucesso.']);
+    }
+
+    public function show($id)
+    {
+        $service = Service::where('id', $id)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        return response()->json($service);
+    }
+
+    public function availability(Request $request, $id)
+    {
+        $request->validate(['date' => 'required|date_format:Y-m-d']);
+        $requestedDate = $request->query('date');
+
+        $service = Service::where('id', $id)->where('is_active', true)->firstOrFail();
+        $providerId = $service->user_id;
+        $duration = $service->duration_minutes;
+
+        $baseDate = Carbon::parse($requestedDate);
+        $dayOfWeek = $baseDate->dayOfWeekIso;
+
+
+        $schedule = ScheduleConfig::where('user_id', $providerId)->where('day_of_week', $dayOfWeek)->first();
+        if (!$schedule)
+            return response()->json([]);
+
+
+
+        $existingAppointments = Appointment::where('provider_id', $providerId)
+            ->whereDate('start_time', $requestedDate)
+            ->where('status', 'active')
+            ->get();
+
+        $availableSlots = [];
+        $currentSlot = $baseDate->copy()->setTimeFromTimeString($schedule->start_time);
+        $endOfDay = $baseDate->copy()->setTimeFromTimeString($schedule->end_time);
+
+        $lunchStart = $schedule->lunch_start_time ? $baseDate->copy()->setTimeFromTimeString($schedule->lunch_start_time) : null;
+        $lunchEnd = $schedule->lunch_end_time ? $baseDate->copy()->setTimeFromTimeString($schedule->lunch_end_time) : null;
+
+        while ($currentSlot->copy()->addMinutes($duration)->lte($endOfDay)) {
+            $slotStart = $currentSlot->copy();
+            $slotEnd = $currentSlot->copy()->addMinutes($duration);
+
+            $isInLunch = $lunchStart && ($slotStart < $lunchEnd && $slotEnd > $lunchStart);
+
+            $isOccupied = $existingAppointments->contains(function ($appointment) use ($slotStart, $slotEnd) {
+
+                $appStart = Carbon::parse($appointment->start_time);
+                $appEnd = Carbon::parse($appointment->end_time);
+
+                return ($slotStart < $appEnd && $slotEnd > $appStart);
+            });
+
+            if (!$isInLunch) {
+
+                $availableSlots[] = [
+                    'time' => $slotStart->format('H:i'),
+                    'available' => !$isOccupied
+                ];
+            }
+
+            $currentSlot->addMinutes($duration);
+        }
+
+        return response()->json($availableSlots);
     }
 }
