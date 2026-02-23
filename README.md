@@ -1,4 +1,4 @@
-```markdown
+```
 # 🚀 Slotly
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
@@ -116,8 +116,6 @@ slotly/
     │       └── _dashboard/   # Área logada do Prestador
     └── package.json
 
-```
-
 ## 🔐 Modelo de Dados Principais
 
 * **User**: Tabela central de usuários (Diferenciados por roles: provider/client).
@@ -154,3 +152,4 @@ slotly/
 3. Commit suas mudanças (`git commit -m 'feat: Adiciona painel do barbeiro'`)
 4. Push para a branch (`git push origin feature/MinhaFeature`)
 5. Abra um Pull Request
+```
