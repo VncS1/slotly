@@ -1,7 +1,3 @@
-Para deixar o seu repositório digno de um desenvolvedor de ponta, adicionei as **badges** (escudos) das tecnologias no topo. Isso atrai o olhar de recrutadores e de outros desenvolvedores logo no primeiro segundo em que abrem o seu GitHub.
-
-Copie todo o conteúdo do bloco abaixo e cole diretamente no seu arquivo `README.md`:
-
 ```markdown
 # 🚀 Slotly
 
