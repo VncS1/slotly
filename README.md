@@ -57,7 +57,7 @@ Como o projeto é dividido entre API (Backend) e SPA (Frontend), você precisar�
 ```bash
 # Clone o repositório
 git clone https://github.com/seu-usuario/slotly.git
-cd slotly/backend
+cd slotly/slotly-back
 
 # Instale as dependências do PHP
 composer install
@@ -85,7 +85,7 @@ php artisan serve
 Abra uma nova aba no seu terminal:
 
 ```bash
-cd slotly/frontend
+cd slotly/slotly-front
 
 # Instale as dependências do Node
 npm install
@@ -106,7 +106,7 @@ npm run dev
 
 ```text
 slotly/
-├── backend/                  # API Laravel
+├── slotly-back/                  # API Laravel
 │   ├── app/
 │   │   ├── Http/Controllers/ # Lógica de negócio (Appointment, Service, etc.)
 │   │   └── Models/           # Modelos do Eloquent (Relações do banco)
@@ -114,7 +114,7 @@ slotly/
 │   └── routes/
 │       └── api.php           # Definição dos endpoints REST
 │
-└── frontend/                 # Aplicação React
+└── slotly-front/                 # Aplicação React
     ├── src/
     │   ├── components/       # Componentes de UI reutilizáveis (Inputs, Toggles)
     │   ├── lib/              # Configurações globais (Instância do Axios/API)
@@ -145,9 +145,9 @@ slotly/
 - [x] Gestão de perfil e upload de avatar.
 
 ### Fase 2
-- [ ] Dashboard do Prestador (Visão da agenda do dia).
-- [ ] Alteração de status pelo profissional (Marcar como Concluído).
-- [ ] Configuração de grade de horários flexível pelo prestador.
+- [x] Dashboard do Prestador (Visão da agenda do dia).
+- [x] Alteração de status pelo profissional (Marcar como Concluído).
+- [x] Configuração de grade de horários flexível pelo prestador.
 
 ### Fase 3
 - [ ] Disparo de e-mails transacionais (Confirmação de Agendamento).
