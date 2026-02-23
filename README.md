@@ -1,4 +1,5 @@
-```
+<div align="center">
+  
 # 🚀 Slotly
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
@@ -7,7 +8,11 @@
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 
-Uma plataforma profissional e moderna para agendamento de serviços. O Slotly conecta prestadores de serviços (como barbeiros, dentistas, clínicas) aos seus clientes, oferecendo uma experiência fluida de marcação de horários, prevenção inteligente de conflitos na agenda e gestão completa de perfis.
+*Uma plataforma profissional e moderna para agendamento de serviços. O Slotly conecta prestadores aos seus clientes, oferecendo uma experiência fluida de marcação de horários, prevenção inteligente de conflitos na agenda e gestão completa de perfis.*
+
+</div>
+
+---
 
 ## ✨ Funcionalidades
 
@@ -36,6 +41,8 @@ Uma plataforma profissional e moderna para agendamento de serviços. O Slotly co
 - **Autenticação**: Laravel Sanctum (Baseada em Tokens/Cookies para SPA)
 - **Manipulação de Datas**: Carbon
 
+---
+
 ## 🚀 Instalação e Execução Local
 
 Como o projeto é dividido entre API (Backend) e SPA (Frontend), você precisará rodar ambos os ambientes.
@@ -49,7 +56,7 @@ Como o projeto é dividido entre API (Backend) e SPA (Frontend), você precisar�
 
 ```bash
 # Clone o repositório
-git clone [https://github.com/seu-usuario/slotly.git](https://github.com/seu-usuario/slotly.git)
+git clone https://github.com/seu-usuario/slotly.git
 cd slotly/backend
 
 # Instale as dependências do PHP
@@ -71,7 +78,6 @@ php artisan migrate
 
 # Inicie o servidor da API (rodará em http://localhost:8000)
 php artisan serve
-
 ```
 
 ### 2. Configurando o Frontend (React)
@@ -90,10 +96,11 @@ cp .env.example .env
 
 # Inicie o servidor de desenvolvimento (rodará em http://localhost:5173)
 npm run dev
-
 ```
 
-Acesse a aplicação no navegador em `http://localhost:5173`.
+> **Acesse a aplicação no navegador em:** `http://localhost:5173`
+
+---
 
 ## 📁 Estrutura do Projeto
 
@@ -115,6 +122,9 @@ slotly/
     │       ├── _client/      # Área logada do Cliente (Meus Agendamentos, Perfil)
     │       └── _dashboard/   # Área logada do Prestador
     └── package.json
+```
+
+---
 
 ## 🔐 Modelo de Dados Principais
 
@@ -123,27 +133,28 @@ slotly/
 * **Appointment**: Agendamentos realizados. Relaciona um `client_id`, um `provider_id`, o `service_id` e o intervalo de tempo (`start_time` e `end_time` em DATETIME).
 * **ScheduleConfig**: Configuração de dias úteis e horários de almoço do prestador.
 
-## 📊 Próximos Passos (Roadmap)
+---
+
+## 📊 Roadmap e Próximos Passos
 
 ### MVP (Fase Atual)
-
-* ✅ Autenticação segura (Login/Cadastro).
-* ✅ Motor de busca de horários disponíveis.
-* ✅ Agendamento de serviços com trava contra conflitos.
-* ✅ Painel do Cliente (Visualização e Cancelamento de agendamentos).
-* ✅ Gestão de perfil e upload de avatar.
+- [x] Autenticação segura (Login/Cadastro).
+- [x] Motor de busca de horários disponíveis.
+- [x] Agendamento de serviços com trava contra conflitos.
+- [x] Painel do Cliente (Visualização e Cancelamento de agendamentos).
+- [x] Gestão de perfil e upload de avatar.
 
 ### Fase 2
-
-* [ ] Dashboard do Prestador (Visão da agenda do dia).
-* [ ] Alteração de status pelo profissional (Marcar como Concluído).
-* [ ] Configuração de grade de horários flexível pelo prestador.
+- [ ] Dashboard do Prestador (Visão da agenda do dia).
+- [ ] Alteração de status pelo profissional (Marcar como Concluído).
+- [ ] Configuração de grade de horários flexível pelo prestador.
 
 ### Fase 3
+- [ ] Disparo de e-mails transacionais (Confirmação de Agendamento).
+- [ ] Integração com WhatsApp para lembretes.
+- [ ] Remarcação de horários sem precisar cancelar e agendar novamente.
 
-* [ ] Disparo de e-mails transacionais (Confirmação de Agendamento).
-* [ ] Integração com WhatsApp para lembretes.
-* [ ] Remarcação de horários sem precisar cancelar e agendar novamente.
+---
 
 ## 🤝 Contribuição
 
@@ -152,4 +163,9 @@ slotly/
 3. Commit suas mudanças (`git commit -m 'feat: Adiciona painel do barbeiro'`)
 4. Push para a branch (`git push origin feature/MinhaFeature`)
 5. Abra um Pull Request
-```
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
