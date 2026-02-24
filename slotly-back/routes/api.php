@@ -53,4 +53,7 @@ Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     Route::get('/client/appointments', [AppointmentController::class, 'clientIndex']);
 
     Route::patch('/appointments/{id}/cancel', [AppointmentController::class, 'cancel']);
+
+    Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
+
 });
