@@ -132,6 +132,8 @@ slotly/
 * **Service**: Serviços oferecidos pelos prestadores (ex: "Corte Masculino", Duração, Preço).
 * **Appointment**: Agendamentos realizados. Relaciona um `client_id`, um `provider_id`, o `service_id` e o intervalo de tempo (`start_time` e `end_time` em DATETIME).
 * **ScheduleConfig**: Configuração de dias úteis e horários de almoço do prestador.
+* **Category**: Categorias dos serviços dos prestadores.
+* **DateOverride**: Feriados ou dias que o prestador não irá trabalhar.
 
 ---
 
