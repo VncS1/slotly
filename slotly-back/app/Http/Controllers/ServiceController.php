@@ -91,16 +91,14 @@ class ServiceController extends Controller
         $baseDate = Carbon::parse($requestedDate);
         $dayOfWeek = $baseDate->dayOfWeekIso;
 
-
         $schedule = ScheduleConfig::where('user_id', $providerId)->where('day_of_week', $dayOfWeek)->first();
-        if (!$schedule)
+        if (!$schedule) {
             return response()->json([]);
-
-
+        }
 
         $existingAppointments = Appointment::where('provider_id', $providerId)
             ->whereDate('start_time', $requestedDate)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'pending'])
             ->get();
 
         $availableSlots = [];
@@ -114,18 +112,24 @@ class ServiceController extends Controller
             $slotStart = $currentSlot->copy();
             $slotEnd = $currentSlot->copy()->addMinutes($duration);
 
-            $isInLunch = $lunchStart && ($slotStart < $lunchEnd && $slotEnd > $lunchStart);
+            $isInLunch = false;
+            if ($lunchStart && $lunchEnd) {
+                $isInLunch = $slotStart->lt($lunchEnd) && $slotEnd->gt($lunchStart);
+            }
 
             $isOccupied = $existingAppointments->contains(function ($appointment) use ($slotStart, $slotEnd) {
+        
+                $appStartTime = Carbon::parse($appointment->start_time)->format('H:i:s');
+                $appEndTime = Carbon::parse($appointment->end_time)->format('H:i:s');
+        
+                $appStart = $slotStart->copy()->setTimeFromTimeString($appStartTime);
+                $appEnd = $slotStart->copy()->setTimeFromTimeString($appEndTime);
 
-                $appStart = Carbon::parse($appointment->start_time);
-                $appEnd = Carbon::parse($appointment->end_time);
-
-                return ($slotStart < $appEnd && $slotEnd > $appStart);
+        
+                return $slotStart->lt($appEnd) && $slotEnd->gt($appStart);
             });
 
             if (!$isInLunch) {
-
                 $availableSlots[] = [
                     'time' => $slotStart->format('H:i'),
                     'available' => !$isOccupied

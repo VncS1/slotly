@@ -66,11 +66,7 @@ class AppointmentController extends Controller
             'time' => 'required|date_format:H:i',
         ]);
 
-
-
         $service = Service::findOrFail($validated['service_id']);
-
-
 
         $start = Carbon::parse($validated['date'] . ' ' . $validated['time']);
         $end = $start->copy()->addMinutes($service->duration_minutes);

@@ -48,8 +48,6 @@ Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
 
     Route::get('/services/{id}/availability', [ServiceController::class, 'availability']);
 
-    Route::get('/appointments', [AppointmentController::class, 'index']);
-
     Route::post('/appointments', [AppointmentController::class, 'store']);
 
     Route::get('/client/appointments', [AppointmentController::class, 'clientIndex']);

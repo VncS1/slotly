@@ -56,8 +56,8 @@ function DashboardLayout() {
             S
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">AgendamentoPro</h1>
-            <p className="text-xs text-slate-400">Provider Workspace</p>
+            <h1 className="font-bold text-lg leading-tight">Slotly</h1>
+            <p className="text-xs text-slate-400">Espaço do Prestador</p>
           </div>
         </div>
 
