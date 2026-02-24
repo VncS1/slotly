@@ -13,18 +13,24 @@ use App\Http\Controllers\ProviderController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
+    Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
+});
+
 Route::middleware(['auth:sanctum', 'role:provider'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::apiResource('services', ServiceController::class)->except(['show']);
 
     Route::put('/user/setup-slug', [AuthController::class, 'updateSlug']);
-
-    Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
 
     Route::get('/schedule-configs', [ScheduleConfigController::class, 'index']);
 
@@ -53,7 +59,5 @@ Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
     Route::get('/client/appointments', [AppointmentController::class, 'clientIndex']);
 
     Route::patch('/appointments/{id}/cancel', [AppointmentController::class, 'cancel']);
-
-    Route::post('/user/profile-update', [AuthController::class, 'updateProfile']);
 
 });

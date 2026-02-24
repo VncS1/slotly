@@ -79,7 +79,7 @@ function OnboardingStep1() {
       </div>
 
       <div className="w-full max-w-4xl mb-8">
-        <p className="text-sm font-medium text-gray-900 mb-2">Step 1 of 3</p>
+        <p className="text-sm font-medium text-gray-900 mb-2">Passo 1 de 3</p>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div className="bg-blue-600 h-2 rounded-full w-1/3 transition-all duration-500"></div>
         </div>

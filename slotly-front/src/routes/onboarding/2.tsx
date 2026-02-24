@@ -25,7 +25,6 @@ function OnboardingStep2() {
     resolver: zodResolver(ProfileSchema),
   });
 
-  // Lógica visual para pré-visualizar a imagem selecionada
   const photoFiles = watch("photo");
   useEffect(() => {
     if (photoFiles && photoFiles.length > 0) {
@@ -33,7 +32,6 @@ function OnboardingStep2() {
       const objectUrl = URL.createObjectURL(file);
       setPreview(objectUrl);
 
-      // Limpeza de memória
       return () => URL.revokeObjectURL(objectUrl);
     }
   }, [photoFiles]);
@@ -42,6 +40,12 @@ function OnboardingStep2() {
     try {
       setServerError(null);
       const formData = new FormData();
+
+      const user = JSON.parse(localStorage.getItem("slotly_user") || "{}");
+
+      if (user.name) {
+        formData.append("name", user.name);
+      }
 
       if (data.bio) {
         formData.append("bio", data.bio);
@@ -54,7 +58,6 @@ function OnboardingStep2() {
       await api.post("/user/profile-update", formData);
 
       await navigate({ to: "/onboarding/3" });
-
     } catch (error) {
       if (error instanceof AxiosError) {
         setServerError(
@@ -90,19 +93,19 @@ function OnboardingStep2() {
           onClick={handleLogout}
           className="text-sm font-medium text-gray-500 hover:text-gray-900"
         >
-          Sign out
+          Sair
         </button>
       </div>
 
       <div className="w-full max-w-4xl mb-8">
-        <p className="text-sm font-medium text-gray-900 mb-2">Step 2 of 3</p>
+        <p className="text-sm font-medium text-gray-900 mb-2">Passo 2 de 3</p>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div className="bg-blue-600 h-2 rounded-full w-2/3 transition-all duration-500"></div>
         </div>
         <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium">
-          <span className="text-blue-600">Business URL</span>
-          <span className="text-blue-600">Profile Setup</span>
-          <span>Availability</span>
+          <span className="text-blue-600">URL do seu negócio</span>
+          <span className="text-blue-600">Perfil</span>
+          <span>Serviços</span>
         </div>
       </div>
 

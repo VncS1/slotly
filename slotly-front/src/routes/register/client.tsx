@@ -29,8 +29,8 @@ function ClientRegister() {
       setServerError(null);
       const response = await api.post("/register", { ...data, role: "client" }); // Role fixo
 
-      const { token, user } = response.data;
-      localStorage.setItem("slotly_token", token);
+      const { access_token, user } = response.data;
+      localStorage.setItem("slotly_token", access_token);
       localStorage.setItem("slotly_user", JSON.stringify(user));
 
       await navigate({ to: "/" });
@@ -43,8 +43,6 @@ function ClientRegister() {
 
   return (
     <div className="min-h-screen flex bg-white">
-      {/* --- LADO ESQUERDO (IMAGEM) --- */}
-      {/* hidden lg:block -> Só aparece em telas grandes */}
       <div className="hidden lg:block w-1/2 relative bg-gray-900">
         <img
           src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop"
@@ -69,7 +67,6 @@ function ClientRegister() {
         </div>
       </div>
 
-      {/* --- LADO DIREITO (FORMULÁRIO) --- */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 overflow-y-auto">
         <div className="max-w-md w-full space-y-8">
           <div className="lg:hidden mb-6">
@@ -92,7 +89,6 @@ function ClientRegister() {
 
           <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
-              {/* Nome */}
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   Nome Completo
@@ -110,7 +106,6 @@ function ClientRegister() {
                 )}
               </div>
 
-              {/* Email */}
               <div>
                 <label className="text-sm font-medium text-gray-700">
                   E-mail Profissional
@@ -128,7 +123,6 @@ function ClientRegister() {
                 )}
               </div>
 
-              {/* Senha */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700">

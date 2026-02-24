@@ -17,11 +17,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
+        'role',
         'business_name',
         'business_slug',
         'onboarding_complete',
-        'role', // 'provider' ou 'client'
+        'phone',
+        'bio',
+        'profile_photo_path',
     ];
 
     protected $hidden = [

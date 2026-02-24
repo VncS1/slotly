@@ -15,20 +15,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (
-      error.response?.status === 401 &&
-      !error.config.url?.includes("/login")
-    ) {
-      localStorage.removeItem("slotly_token");
-      localStorage.removeItem("slotly_user");
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("slotly_token");
 
-      if (!window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
-      }
-    }
-    return Promise.reject(error);
-  },
-);
+  if (token && token !== "undefined" && token !== "null") {
+    const cleanToken = token.replace(/['"]+/g, "");
+
+    config.headers.Authorization = `Bearer ${cleanToken}`;
+  }
+  return config;
+});

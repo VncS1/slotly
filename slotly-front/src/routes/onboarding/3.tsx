@@ -52,14 +52,14 @@ function OnboardingStep3() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-20 px-4">
       <div className="w-full max-w-xl mb-8">
-        <p className="text-sm font-medium text-gray-900 mb-2">Step 3 of 3</p>
+        <p className="text-sm font-medium text-gray-900 mb-2">Passo 3 de 3</p>
         <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
           <div className="bg-blue-600 h-2 rounded-full w-full transition-all duration-500"></div>
         </div>
         <div className="flex justify-between text-xs text-gray-400 font-medium">
           <span className="text-blue-600">URL</span>
-          <span className="text-blue-600">Profile</span>
-          <span className="text-blue-600">First Service</span>
+          <span className="text-blue-600">Perfil</span>
+          <span className="text-blue-600">Primeiro Serviço</span>
         </div>
       </div>
 
@@ -70,7 +70,7 @@ function OnboardingStep3() {
           </h1>
           <p className="text-gray-500 mt-1">
             O que as pessoas vão agendar com você? Você poderá criar outros
-            tipos (Event Types) depois no painel.
+            serviços depois no painel.
           </p>
         </div>
 

@@ -35,8 +35,8 @@ function ProviderRegister() {
         role: "provider",
       });
 
-      const { token, user } = response.data;
-      localStorage.setItem("slotly_token", token);
+      const { access_token, user } = response.data;
+      localStorage.setItem("slotly_token", access_token);
       localStorage.setItem("slotly_user", JSON.stringify(user));
 
       await navigate({ to: "/onboarding/1" });
